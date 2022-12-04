@@ -1,0 +1,11 @@
+calc: ./tmp/calc.o ./tmp/rational.o ./tmp/rat_io.o
+	gcc -g -o ./exe/calc ./tmp/calc.o ./tmp/rational.o ./tmp/rat_io.o
+
+./tmp/calc.o: calc.c ./tmp/rational.o ./tmp/rat_io.o
+	gcc -g -c calc.c -o ./tmp/calc.o
+
+./tmp/rational.o: rational.c rational.h
+	gcc -g -c -O0 rational.c -o ./tmp/rational.o
+
+./tmp/rat_io.o: rat_io.c rat_io.h
+	gcc -g -c -O0 rat_io.c -o ./tmp/rat_io.o

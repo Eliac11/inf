@@ -1,0 +1,1 @@
+![-](https://github.com/Eliac11/inf/Anime.gif)

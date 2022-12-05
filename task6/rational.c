@@ -1,15 +1,19 @@
 
 #include <stdio.h>
+#include <stdlib.h>
+
+
 struct rational_t{
     int num;
     unsigned int denom;
 };
 
 struct rational_t rational(int n, int d){
+
     int a,b;
-    a = n;
-    b = d;
-    // printf("%d %d\n",n,d);
+    a = abs(n);
+    b = abs(d);
+
     while(a != 0 && b != 0){
         
         if(a > b){
@@ -18,11 +22,11 @@ struct rational_t rational(int n, int d){
         else{
             b = b % a;
         }
-        // printf("%d %d\n",a,b);
+
     }
     n /= (a+b);
     d /= (a+b);
-    // printf("-----%d %d\n",n,d);
+
     struct rational_t r = {n,d};
     return r;
 }
@@ -37,7 +41,6 @@ long rat_denom(struct rational_t r){
 }
 
 struct rational_t rat_sum(struct rational_t a, struct rational_t b) {
-    // printf("%d %d %d %d\n",a.num,a.denom,b.num,a.denom);
     return rational(rat_num(a) * rat_denom(b) + rat_num(b) * rat_denom(a),
                     rat_denom(a) * rat_denom(b));
 }

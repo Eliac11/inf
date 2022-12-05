@@ -47,19 +47,19 @@ int main()
         struct rational_t a = strtorat(value1, last);
         struct rational_t b = strtorat(value3, last);
 
-        struct rational_t ch = rat_sum(a,b);
-
-        if (value2[0] == '+'){
-            struct rational_t ch = rat_sum(a,b);
+        struct rational_t ch;
+        
+        if (strstr(value2,"+") != NULL){
+            ch = rat_sum(a,b);
         }
-        else if (value2[0] ==  '-'){
-            struct rational_t ch = rat_sub(a,b);
+        else if (strstr(value2,"-") != NULL){
+            ch = rat_sub(a,b);
         }
-        else if (value2[0] == '*'){
-            struct rational_t ch = rat_mul(a,b);
+        else if (strstr(value2,"*") != NULL){
+            ch = rat_mul(a,b);
         }
-        else if (value2[0] == '/'){
-            struct rational_t ch = rat_div(a,b);
+        else if (strstr(value2,"/") != NULL){
+            ch = rat_div(a,b);
         }
             
         

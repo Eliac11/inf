@@ -12,4 +12,5 @@ calc: ./tmp/calc.o ./tmp/rational.o ./tmp/rat_io.o
 ./tmp/rat_io.o: rat_io.c rat_io.h
 	gcc -g -c -O0 rat_io.c -o ./tmp/rat_io.o
 
+
 $(shell mkdir $(DIRS))

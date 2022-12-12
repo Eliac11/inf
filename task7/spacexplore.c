@@ -1,6 +1,5 @@
 #define SDL_MAIN_HANDLED
 #include "SDL.h"
-#include "SDL_TTF.h"
 #include <stdio.h>
  
 const int SCREEN_WIDTH = 1280;
@@ -10,8 +9,12 @@ const int SHIP_SPEED = 20;
 
 SDL_Window *win = NULL;
 SDL_Surface *scr = NULL;
+SDL_Renderer* renderer = NULL;
+
 SDL_Surface *john = NULL;
 SDL_Surface *sky = NULL;
+
+SDL_Surface* numbs[10];
 
 
 
@@ -31,6 +34,7 @@ int init() {
 
     scr = SDL_GetWindowSurface(win);
 
+
     return 0;
 }
 
@@ -38,13 +42,22 @@ int load() {
     john = SDL_LoadBMP("ship.bmp");
     sky = SDL_LoadBMP("sky.bmp");
 
-    SDL_SetSurfaceAlphaMod(sky, 1);
-
     if (john == NULL) {
         // std::cout << "Can't load image: " << SDL_GetError() << std::endl;
         system("pause");
         return 1;
     }
+
+    numbs[0] = SDL_LoadBMP("numbers/0.bmp");
+    numbs[1] = SDL_LoadBMP("numbers/1.bmp");
+    numbs[2] = SDL_LoadBMP("numbers/2.bmp");
+    numbs[3] = SDL_LoadBMP("numbers/3.bmp");
+    numbs[4] = SDL_LoadBMP("numbers/4.bmp");
+    numbs[5] = SDL_LoadBMP("numbers/5.bmp");
+    numbs[6] = SDL_LoadBMP("numbers/6.bmp");
+    numbs[7] = SDL_LoadBMP("numbers/7.bmp");
+    numbs[8] = SDL_LoadBMP("numbers/8.bmp");
+    numbs[9] = SDL_LoadBMP("numbers/9.bmp");
 
     return 0;
 }
@@ -71,22 +84,25 @@ int ChekCanMove(int x,int y){
 
 }
 
-void DrawTimer(int seconds){
+void drawTimer(int time,int x,int y){
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
 
-TTF_Font* Sans = TTF_OpenFont("Sans.ttf", 24);
-SDL_Color White = {255, 255, 255};
+    while (1){
 
-SDL_Surface* surfaceMessage = TTF_RenderText_Solid(Sans, "put your text here", White); 
+        SDL_BlitSurface(numbs[time % 10], NULL, scr, &r);
 
-SDL_Texture* Message = SDL_CreateTextureFromSurface(scr, surfaceMessage);
+        time /= 10;
+        r.x = r.x - 25;
 
-SDL_Rect Message_rect; 
-Message_rect.x = 0;   
-Message_rect.y = 0; 
-Message_rect.w = 100; 
-Message_rect.h = 100; 
+        if(time == 0){
+            break;
+        }
 
-SDL_RenderCopy(scr, Message, NULL, &Message_rect);
+    }
+
+
 }
 
 
@@ -107,6 +123,10 @@ int main (int argc, char ** args) {
     SDL_Rect sky_r;
     sky_r.x = 0;
     sky_r.y = 0;
+
+    SDL_Rect UI_r;
+    UI_r.x = 0;
+    UI_r.y = 0;
 
     int x = SCREEN_WIDTH/2;
     int y = 960 - john->h - 100;
@@ -151,15 +171,22 @@ int main (int argc, char ** args) {
 
         // SDL_FillRect(scr, NULL, SDL_MapRGBA(scr -> format, 255, 255, 255,1));
 
-        
 
         SDL_BlitSurface(sky, NULL, scr, &sky_r);
         
-        // SDL_BlitSurface(john, NULL, scr, &r);
+        SDL_BlitSurface(john, NULL, scr, &r);
 
-        DrawTimer(1212);
+        drawTimer(SDL_GetTicks()/1000,100,20);
 
         SDL_UpdateWindowSurface(win);
+
+
+
+        if(SDL_GetTicks()/1000 == 60){
+
+            printf("WIN!!!!!!!!");
+            return quit();
+        }
     }
 
     return quit();

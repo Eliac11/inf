@@ -21,22 +21,27 @@ SDL_Surface *sky = NULL;
 SDL_Surface* numbs[10];
 SDL_Surface *asteroidSurface;
 
+struct Coordinate{
+    float x;
+    float y;
+};
+
 struct SpaceShip{
-    SDL_Rect pos;
+    struct Coordinate pos;
     int lives;
 };
 
 struct SpaceShip Ship;
 
 struct Asteroid{
-    SDL_Rect pos;
+    struct Coordinate pos;
     int type;
     int speed;
 };
 
 
 struct Asteroid aster_init(int type,int x,int y,int speed){
-    SDL_Rect w;
+    struct Coordinate w;
     w.x = x;
     w.y = y;
     struct Asteroid astt = {w,type,speed};
@@ -125,7 +130,11 @@ void drawAsteroid(struct Asteroid astr){
     A_obr.w = 100;
     A_obr.h = 100;
 
-    SDL_BlitSurface(asteroidSurface, &A_obr, scr, &(astr.pos));
+    SDL_Rect A_pos;
+    A_pos.x = astr.pos.x;
+    A_pos.y = astr.pos.y;
+
+    SDL_BlitSurface(asteroidSurface, &A_obr, scr, &A_pos);
 }
 
 
@@ -135,7 +144,7 @@ void drawAsteroidALL(){
     }
 }
 
-void update(int dt){
+void update(float dt){
     for(int i = 0; i < 100; i++){
 
         ListAsteroid[i].pos.y = ListAsteroid[i].pos.y + ListAsteroid[i].speed * dt;
@@ -144,13 +153,12 @@ void update(int dt){
             ListAsteroid[i].pos.y = -rand()%100000;
         }
 
-        // for(int j = 0; j < 100; j++){
-        //     if(i == j){continue;}
 
-        //     float d = sqrt(powf(ListAsteroid[i].pos.y-ListAsteroid[j].pos.y)+powf(ListAsteroid[i].pos.x-ListAsteroid[j].pos.x))
-
-        //     if ()
-        // }
+        float d = sqrt(powf((ListAsteroid[i].pos.y + 35)-(Ship.pos.y + john->h/2),2)+powf((ListAsteroid[i].pos.x + 35)-(Ship.pos.x + john->w/2),2));
+        if (d < 50){
+            printf("GAME OVER!!!!!!!!");
+            quit();
+        }
     }
 }
 
@@ -203,14 +211,17 @@ int main (int argc, char ** args) {
         sky_r.x = ((SCREEN_WIDTH - Ship.pos.x) - sky->w)/10;
         sky_r.y = ((SCREEN_HEIGHT - Ship.pos.y) - sky->h)/10;
 
-        update(1);
-
-        // SDL_FillRect(scr, NULL, SDL_MapRGBA(scr -> format, 255, 255, 255,1));
+        update(0.2);
+        
 
 
         SDL_BlitSurface(sky, NULL, scr, &sky_r);
-        
-        SDL_BlitSurface(john, NULL, scr, &(Ship.pos));
+
+
+        SDL_Rect S_pos;
+        S_pos.x = Ship.pos.x;
+        S_pos.y = Ship.pos.y;
+        SDL_BlitSurface(john, NULL, scr, &S_pos);
 
         drawAsteroidALL();
 
@@ -222,10 +233,37 @@ int main (int argc, char ** args) {
             printf("WIN!!!!!!!!");
             return quit();
         }
-        
+
+
+        /// 
+        // DEBUG_DRAW();
+        ///
         //////////////////
         SDL_UpdateWindowSurface(win);
     }
 
     return quit();
+}
+
+
+
+
+
+
+
+void DEBUG_DRAW(){
+    SDL_Rect debug_r;
+        debug_r.x = (Ship.pos.x + john->w/2);
+        debug_r.y = (Ship.pos.y + john->h/2);
+        debug_r.w = 4;
+        debug_r.h = 4;
+        SDL_FillRect(scr, &debug_r, SDL_MapRGBA(scr -> format, 255, 0, 0,1));
+
+        for(int i = 0; i < 100; i++){
+            debug_r.x = (ListAsteroid[i].pos.x + 35);
+            debug_r.y = (ListAsteroid[i].pos.y + 35);
+            debug_r.w = 4;
+            debug_r.h = 4;
+            SDL_FillRect(scr, &debug_r, SDL_MapRGBA(scr -> format, 255, 0, 0,1));
+        }
 }

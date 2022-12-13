@@ -19,7 +19,7 @@ SDL_Surface *john = NULL;
 SDL_Surface *sky = NULL;
 
 SDL_Surface* numbs[10];
-SDL_Surface *asteroidSurface;
+SDL_Surface* asteroidSurface[8];
 
 struct Coordinate{
     float x;
@@ -36,10 +36,8 @@ struct SpaceShip Ship;
 struct Asteroid{
     struct Coordinate pos;
     int type;
-    int speed;
+    float speed;
 };
-
-
 struct Asteroid aster_init(int type,int x,int y,int speed){
     struct Coordinate w;
     w.x = x;
@@ -48,7 +46,22 @@ struct Asteroid aster_init(int type,int x,int y,int speed){
     return astt;
 }
 
+struct Coin{
+    struct Coordinate pos;
+    int type;
+    float speed;
+};
+struct Coin Coin_init(int type,int x,int y,int speed){
+    struct Coordinate w;
+    w.x = x;
+    w.y = y;
+    struct Coin c = {w,type,speed};
+    return c;
+}
+
 struct Asteroid ListAsteroid[100];
+struct Coin ListCoin[100];
+
 
 void init() {
     win = SDL_CreateWindow("GAME", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
@@ -56,7 +69,7 @@ void init() {
 
 
     for(int i = 0; i < 100; i++){
-        ListAsteroid[i] = aster_init(rand()%16,rand()%SCREEN_WIDTH,-rand()%100000,1+rand()%2);
+        ListAsteroid[i] = aster_init(rand()%8,rand()%SCREEN_WIDTH,-rand()%100000,1+rand()%2);
     }
 }
 
@@ -64,8 +77,6 @@ void load() {
 
     john = SDL_LoadBMP("ship.bmp");
     sky = SDL_LoadBMP("sky.bmp");
-
-    asteroidSurface = SDL_LoadBMP("Asteroids.bmp");
 
     numbs[0] = SDL_LoadBMP("numbers/0.bmp");
     numbs[1] = SDL_LoadBMP("numbers/1.bmp");
@@ -77,6 +88,15 @@ void load() {
     numbs[7] = SDL_LoadBMP("numbers/7.bmp");
     numbs[8] = SDL_LoadBMP("numbers/8.bmp");
     numbs[9] = SDL_LoadBMP("numbers/9.bmp");
+
+    asteroidSurface[0] = SDL_LoadBMP("Asteroids/0.bmp");
+    asteroidSurface[1] = SDL_LoadBMP("Asteroids/1.bmp");
+    asteroidSurface[2] = SDL_LoadBMP("Asteroids/2.bmp");
+    asteroidSurface[3] = SDL_LoadBMP("Asteroids/3.bmp");
+    asteroidSurface[4] = SDL_LoadBMP("Asteroids/4.bmp");
+    asteroidSurface[5] = SDL_LoadBMP("Asteroids/5.bmp");
+    asteroidSurface[6] = SDL_LoadBMP("Asteroids/6.bmp");
+    asteroidSurface[7] = SDL_LoadBMP("Asteroids/7.bmp");
 
 }
 
@@ -124,17 +144,12 @@ void drawTimer(int time,int x,int y){
 }
 
 void drawAsteroid(struct Asteroid astr){
-    SDL_Rect A_obr;
-    A_obr.x = 100 * astr.type;
-    A_obr.y = 0;
-    A_obr.w = 100;
-    A_obr.h = 100;
 
     SDL_Rect A_pos;
     A_pos.x = astr.pos.x;
     A_pos.y = astr.pos.y;
 
-    SDL_BlitSurface(asteroidSurface, &A_obr, scr, &A_pos);
+    SDL_BlitSurface(asteroidSurface[astr.type], NULL, scr, &A_pos);
 }
 
 

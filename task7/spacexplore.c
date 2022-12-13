@@ -1,6 +1,10 @@
 #define SDL_MAIN_HANDLED
 #include "SDL.h"
+
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
  
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 960;
@@ -15,38 +19,48 @@ SDL_Surface *john = NULL;
 SDL_Surface *sky = NULL;
 
 SDL_Surface* numbs[10];
+SDL_Surface *asteroidSurface;
+
+struct SpaceShip{
+    SDL_Rect pos;
+    int lives;
+};
+
+struct SpaceShip Ship;
+
+struct Asteroid{
+    SDL_Rect pos;
+    int type;
+    int speed;
+};
 
 
+struct Asteroid aster_init(int type,int x,int y,int speed){
+    SDL_Rect w;
+    w.x = x;
+    w.y = y;
+    struct Asteroid astt = {w,type,speed};
+    return astt;
+}
 
-int init() {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        // std::cout << "Can't init: " << SDL_GetError() << std::endl;
-        system("pause");
-        return 1;
-    }
+struct Asteroid ListAsteroid[100];
 
-    win = SDL_CreateWindow("События", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (win == NULL) {
-        // std::cout << "Can't create window: " << SDL_GetError() << std::endl;
-        system("pause");
-        return 1;
-    }
-
+void init() {
+    win = SDL_CreateWindow("GAME", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     scr = SDL_GetWindowSurface(win);
 
 
-    return 0;
+    for(int i = 0; i < 100; i++){
+        ListAsteroid[i] = aster_init(rand()%16,rand()%SCREEN_WIDTH,-rand()%100000,1+rand()%2);
+    }
 }
 
-int load() {
+void load() {
+
     john = SDL_LoadBMP("ship.bmp");
     sky = SDL_LoadBMP("sky.bmp");
 
-    if (john == NULL) {
-        // std::cout << "Can't load image: " << SDL_GetError() << std::endl;
-        system("pause");
-        return 1;
-    }
+    asteroidSurface = SDL_LoadBMP("Asteroids.bmp");
 
     numbs[0] = SDL_LoadBMP("numbers/0.bmp");
     numbs[1] = SDL_LoadBMP("numbers/1.bmp");
@@ -59,7 +73,6 @@ int load() {
     numbs[8] = SDL_LoadBMP("numbers/8.bmp");
     numbs[9] = SDL_LoadBMP("numbers/9.bmp");
 
-    return 0;
 }
 
 int quit() {
@@ -105,34 +118,57 @@ void drawTimer(int time,int x,int y){
 
 }
 
+void drawAsteroid(struct Asteroid astr){
+    SDL_Rect A_obr;
+    A_obr.x = 100 * astr.type;
+    A_obr.y = 0;
+    A_obr.w = 100;
+    A_obr.h = 100;
+
+    SDL_BlitSurface(asteroidSurface, &A_obr, scr, &(astr.pos));
+}
+
+
+void drawAsteroidALL(){
+    for(int i = 0; i < 100; i++){
+        drawAsteroid(ListAsteroid[i]);
+    }
+}
+
+void update(int dt){
+    for(int i = 0; i < 100; i++){
+
+        ListAsteroid[i].pos.y = ListAsteroid[i].pos.y + ListAsteroid[i].speed * dt;
+
+        if (ListAsteroid[i].pos.y - 100 > SCREEN_HEIGHT){
+            ListAsteroid[i].pos.y = -rand()%100000;
+        }
+
+        // for(int j = 0; j < 100; j++){
+        //     if(i == j){continue;}
+
+        //     float d = sqrt(powf(ListAsteroid[i].pos.y-ListAsteroid[j].pos.y)+powf(ListAsteroid[i].pos.x-ListAsteroid[j].pos.x))
+
+        //     if ()
+        // }
+    }
+}
+
 
 int main (int argc, char ** args) {
-    if (init() == 1) {
-        return 1;
-        
-    }
 
-    if (load() == 1) {
-        return 1;
-    }
+    init();
+    load();
 
     int run = 1;
     SDL_Event e;
+
     SDL_Rect r;
-
     SDL_Rect sky_r;
-    sky_r.x = 0;
-    sky_r.y = 0;
 
-    SDL_Rect UI_r;
-    UI_r.x = 0;
-    UI_r.y = 0;
+    Ship.pos.x = SCREEN_WIDTH/2;
+    Ship.pos.y = 960 - john->h - 100;
 
-    int x = SCREEN_WIDTH/2;
-    int y = 960 - john->h - 100;
-
-    r.x = x;
-    r.y = y;
 
     while (run) {
         while(SDL_PollEvent(&e) != NULL) {
@@ -142,51 +178,53 @@ int main (int argc, char ** args) {
 
             if (e.type == SDL_KEYDOWN) {
                 if (e.key.keysym.sym == SDLK_UP) {
-                    if(ChekCanMove(x,y - SHIP_SPEED)){
-                        y -= SHIP_SPEED;
+                    if(ChekCanMove(Ship.pos.x ,Ship.pos.y - SHIP_SPEED)){
+                        Ship.pos.y -= SHIP_SPEED;
                     }
                 }
                 if (e.key.keysym.sym == SDLK_DOWN) {
-                    if(ChekCanMove(x,y + SHIP_SPEED)){
-                        y += SHIP_SPEED;
+                    if(ChekCanMove(Ship.pos.x ,Ship.pos.y + SHIP_SPEED)){
+                        Ship.pos.y += SHIP_SPEED;
                     }
                 }
                 if (e.key.keysym.sym == SDLK_RIGHT) {
-                    if(ChekCanMove(x + SHIP_SPEED,y)){
-                        x += SHIP_SPEED;
+                    if(ChekCanMove(Ship.pos.x + SHIP_SPEED,Ship.pos.y)){
+                        Ship.pos.x += SHIP_SPEED;
                     }
                 }
                 if (e.key.keysym.sym == SDLK_LEFT) {
-                    if(ChekCanMove(x - SHIP_SPEED,y)){
-                        x -= SHIP_SPEED;
+                    if(ChekCanMove(Ship.pos.x - SHIP_SPEED,Ship.pos.y)){
+                        Ship.pos.x -= SHIP_SPEED;
                     }
                 }
             }
         }
-        r.x = x;
-        r.y = y;
 
-        sky_r.x = ((SCREEN_WIDTH - r.x) - sky->w)/10;
-        sky_r.y = ((SCREEN_HEIGHT - r.y) - sky->h)/10;
+        sky_r.x = ((SCREEN_WIDTH - Ship.pos.x) - sky->w)/10;
+        sky_r.y = ((SCREEN_HEIGHT - Ship.pos.y) - sky->h)/10;
+
+        update(1);
 
         // SDL_FillRect(scr, NULL, SDL_MapRGBA(scr -> format, 255, 255, 255,1));
 
 
         SDL_BlitSurface(sky, NULL, scr, &sky_r);
         
-        SDL_BlitSurface(john, NULL, scr, &r);
+        SDL_BlitSurface(john, NULL, scr, &(Ship.pos));
+
+        drawAsteroidALL();
+
+
 
         drawTimer(SDL_GetTicks()/1000,100,20);
-
-        SDL_UpdateWindowSurface(win);
-
-
-
         if(SDL_GetTicks()/1000 == 60){
 
             printf("WIN!!!!!!!!");
             return quit();
         }
+        
+        //////////////////
+        SDL_UpdateWindowSurface(win);
     }
 
     return quit();

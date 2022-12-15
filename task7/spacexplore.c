@@ -1,11 +1,11 @@
 #define SDL_MAIN_HANDLED
 #include "SDL.h"
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
  
+
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 960;
 
@@ -17,9 +17,13 @@ SDL_Renderer* renderer = NULL;
 
 SDL_Surface *john = NULL;
 SDL_Surface *sky = NULL;
+SDL_Surface *gold = NULL;
 
 SDL_Surface* numbs[10];
 SDL_Surface* asteroidSurface[8];
+
+
+int Points = 0;
 
 struct Coordinate{
     float x;
@@ -71,12 +75,18 @@ void init() {
     for(int i = 0; i < 100; i++){
         ListAsteroid[i] = aster_init(rand()%8,rand()%SCREEN_WIDTH,-rand()%100000,1+rand()%2);
     }
+
+    for(int i = 0; i < 100; i++){
+        ListCoin[i] = Coin_init(1,rand()%SCREEN_WIDTH,-rand()%100000,1+rand()%5);
+    }
 }
 
 void load() {
 
-    john = SDL_LoadBMP("ship.bmp");
-    sky = SDL_LoadBMP("sky.bmp");
+    john = SDL_LoadBMP("otherTexturs/ship.bmp");
+    sky = SDL_LoadBMP("otherTexturs/sky.bmp");
+
+    gold = SDL_LoadBMP("otherTexturs/gold.bmp");
 
     numbs[0] = SDL_LoadBMP("numbers/0.bmp");
     numbs[1] = SDL_LoadBMP("numbers/1.bmp");
@@ -128,7 +138,6 @@ void drawTimer(int time,int x,int y){
     r.y = y;
 
     while (1){
-
         SDL_BlitSurface(numbs[time % 10], NULL, scr, &r);
 
         time /= 10;
@@ -149,6 +158,9 @@ void drawAsteroid(struct Asteroid astr){
     A_pos.x = astr.pos.x;
     A_pos.y = astr.pos.y;
 
+    A_pos.w = 50;
+    A_pos.h = 10;
+
     SDL_BlitSurface(asteroidSurface[astr.type], NULL, scr, &A_pos);
 }
 
@@ -156,6 +168,19 @@ void drawAsteroid(struct Asteroid astr){
 void drawAsteroidALL(){
     for(int i = 0; i < 100; i++){
         drawAsteroid(ListAsteroid[i]);
+    }
+}
+
+void drawCoinALL(){
+    for(int i = 0; i < 100; i++){
+        SDL_Rect A_pos;
+        A_pos.x = ListCoin[i].pos.x;
+        A_pos.y = ListCoin[i].pos.y;
+
+        A_pos.w = 50;
+        A_pos.h = 10;
+
+        SDL_BlitSurface(gold, NULL, scr, &A_pos);
     }
 }
 
@@ -168,6 +193,10 @@ void update(float dt){
             ListAsteroid[i].pos.y = -rand()%100000;
         }
 
+        if(((int)ListAsteroid[i].pos.y) % 30 == 0){
+            ListAsteroid[i].type = (ListAsteroid[i].type + 1) % 8;
+        }
+
 
         float d = sqrt(powf((ListAsteroid[i].pos.y + 35)-(Ship.pos.y + john->h/2),2)+powf((ListAsteroid[i].pos.x + 35)-(Ship.pos.x + john->w/2),2));
         if (d < 50){
@@ -175,6 +204,25 @@ void update(float dt){
             quit();
         }
     }
+
+    for(int i = 0; i < 100; i++){
+
+        ListCoin[i].pos.y = ListCoin[i].pos.y + ListCoin[i].speed * dt;
+
+        if (ListCoin[i].pos.y - 100 > SCREEN_HEIGHT){
+            ListCoin[i].pos.y = -rand()%100000;
+        }
+
+        float d = sqrt(powf((ListCoin[i].pos.y + 35)-(Ship.pos.y + john->h/2),2)+powf((ListCoin[i].pos.x + 35)-(Ship.pos.x + john->w/2),2));
+        if (d < 140){
+            Points += 1;
+            ListCoin[i].pos.y = -rand()%100000;
+        }
+    }
+}
+
+void FixSuccessfulTry(){
+    
 }
 
 
@@ -239,9 +287,14 @@ int main (int argc, char ** args) {
         SDL_BlitSurface(john, NULL, scr, &S_pos);
 
         drawAsteroidALL();
+        drawCoinALL();
 
+        SDL_Rect UI_r = {SCREEN_WIDTH-300,20,125,50};
+        SDL_FillRect(scr, &UI_r, SDL_MapRGBA(scr -> format, 200, 200, 200,1));
+        drawTimer(Points,SCREEN_WIDTH-200,20);
 
-
+        SDL_Rect UI2_r = {50,20,125,50};
+        SDL_FillRect(scr, &UI2_r, SDL_MapRGBA(scr -> format, 255, 255, 255,1));
         drawTimer(SDL_GetTicks()/1000,100,20);
         if(SDL_GetTicks()/1000 == 60){
 
@@ -251,7 +304,7 @@ int main (int argc, char ** args) {
 
 
         /// 
-        // DEBUG_DRAW();
+        //DEBUG_DRAW();
         ///
         //////////////////
         SDL_UpdateWindowSurface(win);

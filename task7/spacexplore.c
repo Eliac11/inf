@@ -4,12 +4,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
  
 
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 960;
 
 const int SHIP_SPEED = 20;
+
+int GLOBAL_Points = 0;
 
 SDL_Window *win = NULL;
 SDL_Surface *scr = NULL;
@@ -23,25 +26,33 @@ SDL_Surface* numbs[10];
 SDL_Surface* asteroidSurface[8];
 
 
-int Points = 0;
 
+/// ALL STRUCTIRS
 struct Coordinate{
     float x;
     float y;
 };
-
 struct SpaceShip{
     struct Coordinate pos;
     int lives;
 };
-
-struct SpaceShip Ship;
-
 struct Asteroid{
     struct Coordinate pos;
     int type;
     float speed;
 };
+struct Coin{
+    struct Coordinate pos;
+    int type;
+    float speed;
+};
+struct Result{
+    int hours, minutes, seconds, day, month, year;
+    int points;
+};
+/////
+
+///ALL INIT STRUCTURS
 struct Asteroid aster_init(int type,int x,int y,int speed){
     struct Coordinate w;
     w.x = x;
@@ -49,12 +60,6 @@ struct Asteroid aster_init(int type,int x,int y,int speed){
     struct Asteroid astt = {w,type,speed};
     return astt;
 }
-
-struct Coin{
-    struct Coordinate pos;
-    int type;
-    float speed;
-};
 struct Coin Coin_init(int type,int x,int y,int speed){
     struct Coordinate w;
     w.x = x;
@@ -62,9 +67,22 @@ struct Coin Coin_init(int type,int x,int y,int speed){
     struct Coin c = {w,type,speed};
     return c;
 }
+struct Result Result_init(struct tm* local,int pnt){
 
+    struct Result r = {local->tm_hour, local->tm_min, local->tm_sec,
+                        local->tm_mday, local->tm_mon + 1, local->tm_year + 1900,
+                        pnt
+                    };
+    return r;
+}
+///
+
+///
 struct Asteroid ListAsteroid[100];
 struct Coin ListCoin[100];
+
+struct SpaceShip Ship;
+///
 
 
 void init() {
@@ -80,6 +98,7 @@ void init() {
         ListCoin[i] = Coin_init(1,rand()%SCREEN_WIDTH,-rand()%100000,1+rand()%5);
     }
 }
+
 
 void load() {
 
@@ -132,16 +151,19 @@ int ChekCanMove(int x,int y){
 
 }
 
-void drawTimer(int time,int x,int y){
+int drawTimer(int time,int x,int y){
     SDL_Rect r;
     r.x = x;
     r.y = y;
+
+    int len = 0;
 
     while (1){
         SDL_BlitSurface(numbs[time % 10], NULL, scr, &r);
 
         time /= 10;
         r.x = r.x - 25;
+        len += 25;
 
         if(time == 0){
             break;
@@ -149,7 +171,7 @@ void drawTimer(int time,int x,int y){
 
     }
 
-
+    return len;
 }
 
 void drawAsteroid(struct Asteroid astr){
@@ -215,14 +237,32 @@ void update(float dt){
 
         float d = sqrt(powf((ListCoin[i].pos.y + 35)-(Ship.pos.y + john->h/2),2)+powf((ListCoin[i].pos.x + 35)-(Ship.pos.x + john->w/2),2));
         if (d < 140){
-            Points += 1;
+            GLOBAL_Points += 1;
             ListCoin[i].pos.y = -rand()%100000;
         }
     }
 }
 
-void FixSuccessfulTry(){
-    
+int FixSuccessfulTry(char * filename, struct Result st){
+   
+    FILE * fp;
+
+    if ((fp = fopen(filename, "a")) == NULL)
+    {
+        perror("Error occured while opening file");
+        return 1;
+    }
+
+    int n = fprintf(fp,"%d %d %d %d %d %d - %d", st.hours, st.minutes, st.seconds, st.day, st.month, st.year,st.points);
+
+    for(int i = 0; i < 35 - n;i++){
+        fprintf(fp," ");
+    }
+    fprintf(fp,"\n");
+
+
+    fclose(fp);
+    return 0;
 }
 
 
@@ -291,7 +331,7 @@ int main (int argc, char ** args) {
 
         SDL_Rect UI_r = {SCREEN_WIDTH-300,20,125,50};
         SDL_FillRect(scr, &UI_r, SDL_MapRGBA(scr -> format, 200, 200, 200,1));
-        drawTimer(Points,SCREEN_WIDTH-200,20);
+        drawTimer(GLOBAL_Points,SCREEN_WIDTH-200,20);
 
         SDL_Rect UI2_r = {50,20,125,50};
         SDL_FillRect(scr, &UI2_r, SDL_MapRGBA(scr -> format, 255, 255, 255,1));
@@ -299,6 +339,13 @@ int main (int argc, char ** args) {
         if(SDL_GetTicks()/1000 == 60){
 
             printf("WIN!!!!!!!!");
+
+            
+            time_t now;
+            time(&now);
+            struct tm *local = localtime(&now);
+            struct Result res = Result_init(local,GLOBAL_Points);
+            FixSuccessfulTry("userdata.txt",res);
             return quit();
         }
 

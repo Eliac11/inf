@@ -398,3 +398,4 @@ FodyWeavers.xsd
 *.sln.iml
 *.exe
 *.o
+task7/userdata.txt

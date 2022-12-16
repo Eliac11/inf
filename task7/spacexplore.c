@@ -255,9 +255,7 @@ void update(float dt){
 }
 
 int FixSuccessfulTry(char * filename, struct Result st){
-   
     FILE * fp;
-
     if ((fp = fopen(filename, "a")) == NULL)
     {
         perror("Error occured while opening file");
@@ -265,15 +263,39 @@ int FixSuccessfulTry(char * filename, struct Result st){
     }
 
     int n = fprintf(fp,"%d %d %d %d %d %d - %d", st.hours, st.minutes, st.seconds, st.day, st.month, st.year,st.points);
-
     for(int i = 0; i < 35 - n;i++){
         fprintf(fp," ");
     }
     fprintf(fp,"\n");
 
-
     fclose(fp);
     return 0;
+}
+
+void loadsResults(char * filename, struct Result *best, struct Result *last){
+    FILE * fp;
+    if ((fp = fopen(filename, "r")) == NULL)
+    {
+        perror("Error occured while opening file");
+        return;
+    }
+    best->points = 0;
+    while(!feof(fp))
+    {
+        fscanf(fp,"%d %d %d %d %d %d - %d", &last->hours, &last->minutes, &last->seconds, &last->day, &last->month, &last->year, &last->points);
+        if(best->points <= last->points){
+            best->points = last->points;
+            best->hours = last->hours;
+            best->minutes = last->minutes;
+            best->seconds = last->seconds;
+            best->day = last->day;
+            best->year = last->year;
+            best->month = last->month;
+        }
+    }
+
+    fclose(fp);
+    return;
 }
 
 
@@ -292,6 +314,11 @@ int main (int argc, char ** args) {
     Ship.pos.y = 960 - john->h - 100;
 
 
+    struct Result bestResult;
+    struct Result lastResult;
+    loadsResults("userdata.txt",&bestResult,&lastResult);
+
+    printf("%d\n",bestResult.points);
     while (run) {
         while(SDL_PollEvent(&e) != NULL) {
             if (e.type == SDL_QUIT) {
@@ -325,12 +352,11 @@ int main (int argc, char ** args) {
         sky_r.x = ((SCREEN_WIDTH - Ship.pos.x) - sky->w)/10;
         sky_r.y = ((SCREEN_HEIGHT - Ship.pos.y) - sky->h)/10;
 
+        ///
         update(0.2);
-        
-
+        ///
 
         SDL_BlitSurface(sky, NULL, scr, &sky_r);
-
 
         SDL_Rect S_pos;
         S_pos.x = Ship.pos.x;
@@ -356,7 +382,6 @@ int main (int argc, char ** args) {
 
             printf("WIN!!!!!!!!");
 
-            
             time_t now;
             time(&now);
             struct tm *local = localtime(&now);

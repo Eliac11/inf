@@ -1,5 +1,6 @@
 #define SDL_MAIN_HANDLED
 #include "SDL.h"
+#include "SDL_ttf.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -86,6 +87,10 @@ struct SpaceShip Ship;
 
 
 void init() {
+
+    TTF_Init();
+    atexit(TTF_Quit);
+
     win = SDL_CreateWindow("GAME", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
     scr = SDL_GetWindowSurface(win);
 
@@ -160,18 +165,24 @@ int drawTimer(int time,int x,int y){
 
     while (1){
         SDL_BlitSurface(numbs[time % 10], NULL, scr, &r);
-
         time /= 10;
         r.x = r.x - 25;
         len += 25;
-
         if(time == 0){
             break;
         }
-
     }
-
     return len;
+}
+
+void print_ttf(SDL_Surface *sDest, char* message, char* font, int size, SDL_Color color, SDL_Rect dest){
+    TTF_Font *fnt = TTF_OpenFont(font, size);
+    SDL_Surface *sText = TTF_RenderUTF8_Blended( fnt, message, color);
+
+    SDL_BlitSurface(sText,NULL, sDest,&dest);
+    SDL_FreeSurface(sText);
+
+    TTF_CloseFont(fnt);
 }
 
 void drawAsteroid(struct Asteroid astr){
@@ -336,6 +347,11 @@ int main (int argc, char ** args) {
         SDL_Rect UI2_r = {50,20,125,50};
         SDL_FillRect(scr, &UI2_r, SDL_MapRGBA(scr -> format, 255, 255, 255,1));
         drawTimer(SDL_GetTicks()/1000,100,20);
+
+        SDL_Color clr = {255,250,240,0};
+        SDL_Rect UI3_r = {180,20,0,0};
+        print_ttf(scr, "Время", "beer-money12.ttf", 60, clr, UI3_r);
+
         if(SDL_GetTicks()/1000 == 60){
 
             printf("WIN!!!!!!!!");

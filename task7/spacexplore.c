@@ -12,6 +12,7 @@ const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 960;
 
 const int SHIP_SPEED = 20;
+const int GAME_DURATION = 60;
 
 int GLOBAL_Points = 0;
 
@@ -233,8 +234,7 @@ void update(float dt){
 
         float d = sqrt(powf((ListAsteroid[i].pos.y + 35)-(Ship.pos.y + john->h/2),2)+powf((ListAsteroid[i].pos.x + 35)-(Ship.pos.x + john->w/2),2));
         if (d < 50){
-            printf("GAME OVER!!!!!!!!");
-            quit();
+            Ship.lives = 0;
         }
     }
 
@@ -298,6 +298,69 @@ void loadsResults(char * filename, struct Result *best, struct Result *last){
     return;
 }
 
+void printResult(struct Result result,char text[], SDL_Rect pos, SDL_Color color){
+    char str[1000];
+
+    sprintf(str,"%s %d", text, result.points);
+    print_ttf(scr, str, "beer-money12.ttf", 60, color, pos);
+
+    pos.y = pos.y + 90;
+
+    sprintf(str,"Был получен %d.%d.%d %d:%d:%d", result.day, result.month, result.year, result.hours, result.minutes, result.seconds);
+    print_ttf(scr, str, "beer-money12.ttf", 18, color, pos);
+}
+
+
+void EndWinLoop(struct Result best,struct Result last){
+    SDL_Event e;
+    while (1) {
+            while(SDL_PollEvent(&e) != NULL) {
+                if (e.type == SDL_QUIT) {
+                    quit();
+                }
+            }
+            SDL_Rect sky_r = {0,0,0,0};
+            SDL_BlitSurface(sky, NULL, scr, &sky_r);
+            
+            SDL_Rect UI_r = {SCREEN_WIDTH/2-200,SCREEN_HEIGHT/2-400,0,0};
+
+            char str[1000];
+            SDL_Color clrGold = {253,229,33,0};
+            sprintf(str,"Количество очков: %d", GLOBAL_Points);
+            print_ttf(scr, str, "beer-money12.ttf", 72, clrGold, UI_r);
+
+            UI_r.y = UI_r.y + 300;
+            SDL_Color clrGreen = {83,250,0,0};
+            printResult(best,"Лучший результат:", UI_r,clrGreen);
+
+            UI_r.y = UI_r.y + 200;
+            SDL_Color clrWhite = {255,250,255,0};
+            printResult(last,"Прошлой игры:", UI_r, clrWhite);
+
+            SDL_UpdateWindowSurface(win);
+    }
+}
+
+void EndWinLoopGameover(){
+    SDL_Event e;
+    while (1) {
+            while(SDL_PollEvent(&e) != NULL) {
+                if (e.type == SDL_QUIT) {
+                    quit();
+                }
+            }
+            SDL_FillRect(scr, NULL, SDL_MapRGBA(scr -> format, 0, 0, 0, 1));
+            
+            SDL_Rect UI_r = {SCREEN_WIDTH/2-300,SCREEN_HEIGHT/2,0,0};
+
+            char str[1000];
+            SDL_Color clrRed = {253,0,0,0};
+            print_ttf(scr, "------GAME OVER-------", "beer-money12.ttf", 72, clrRed, UI_r);
+
+            SDL_UpdateWindowSurface(win);
+    }
+}
+
 
 int main (int argc, char ** args) {
 
@@ -312,13 +375,13 @@ int main (int argc, char ** args) {
 
     Ship.pos.x = SCREEN_WIDTH/2;
     Ship.pos.y = 960 - john->h - 100;
+    Ship.lives = 100;
 
 
     struct Result bestResult = {0,0,0,0,0,0,0};
     struct Result lastResult = {0,0,0,0,0,0,0};
     loadsResults("userdata.txt",&bestResult,&lastResult);
 
-    printf("%d\n",bestResult.points);
     while (run) {
         while(SDL_PollEvent(&e) != NULL) {
             if (e.type == SDL_QUIT) {
@@ -378,7 +441,7 @@ int main (int argc, char ** args) {
         SDL_Rect UI3_r = {180,20,0,0};
         print_ttf(scr, "Время", "beer-money12.ttf", 60, clr, UI3_r);
 
-        if(SDL_GetTicks()/1000 == 60){
+        if(SDL_GetTicks()/1000 == GAME_DURATION){
 
             printf("WIN!!!!!!!!");
 
@@ -387,7 +450,15 @@ int main (int argc, char ** args) {
             struct tm *local = localtime(&now);
             struct Result res = Result_init(local,GLOBAL_Points);
             FixSuccessfulTry("userdata.txt",res);
+            loadsResults("userdata.txt",&bestResult,&lastResult);
+
+            EndWinLoop(bestResult,lastResult);
+
             return quit();
+        }
+
+        if (Ship.lives <= 0){
+            EndWinLoopGameover();
         }
 
 

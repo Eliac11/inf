@@ -9,7 +9,7 @@
  
 
 const int SCREEN_WIDTH = 1280;
-const int SCREEN_HEIGHT = 960;
+const int SCREEN_HEIGHT = 600;
 
 const int SHIP_SPEED = 20;
 const int GAME_DURATION = 60;
@@ -322,14 +322,14 @@ void EndWinLoop(struct Result best,struct Result last){
             SDL_Rect sky_r = {0,0,0,0};
             SDL_BlitSurface(sky, NULL, scr, &sky_r);
             
-            SDL_Rect UI_r = {SCREEN_WIDTH/2-200,SCREEN_HEIGHT/2-400,0,0};
+            SDL_Rect UI_r = {SCREEN_WIDTH/2-200,20,0,0};
 
             char str[1000];
             SDL_Color clrGold = {253,229,33,0};
             sprintf(str,"Количество очков: %d", GLOBAL_Points);
             print_ttf(scr, str, "beer-money12.ttf", 72, clrGold, UI_r);
 
-            UI_r.y = UI_r.y + 300;
+            UI_r.y = UI_r.y + 150;
             SDL_Color clrGreen = {83,250,0,0};
             printResult(best,"Лучший результат:", UI_r,clrGreen);
 
@@ -374,7 +374,7 @@ int main (int argc, char ** args) {
     SDL_Rect sky_r;
 
     Ship.pos.x = SCREEN_WIDTH/2;
-    Ship.pos.y = 960 - john->h - 100;
+    Ship.pos.y = SCREEN_HEIGHT - john->h - 100;
     Ship.lives = 100;
 
 
@@ -443,7 +443,6 @@ int main (int argc, char ** args) {
 
         if(SDL_GetTicks()/1000 == GAME_DURATION){
 
-            printf("WIN!!!!!!!!");
 
             time_t now;
             time(&now);

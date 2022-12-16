@@ -314,8 +314,8 @@ int main (int argc, char ** args) {
     Ship.pos.y = 960 - john->h - 100;
 
 
-    struct Result bestResult;
-    struct Result lastResult;
+    struct Result bestResult = {0,0,0,0,0,0,0};
+    struct Result lastResult = {0,0,0,0,0,0,0};
     loadsResults("userdata.txt",&bestResult,&lastResult);
 
     printf("%d\n",bestResult.points);

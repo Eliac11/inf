@@ -11,7 +11,7 @@
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 600;
 
-const int SHIP_SPEED = 1;
+const float SHIP_SPEED = 0.5;
 const int GAME_DURATION = 60;
 
 int GLOBAL_Points = 0;
@@ -331,7 +331,15 @@ void EndWinLoop(struct Result best,struct Result last){
 
             UI_r.y = UI_r.y + 150;
             SDL_Color clrGreen = {83,250,0,0};
-            printResult(best,"Лучший результат:", UI_r,clrGreen);
+            char t_b[40];
+            if(best.points >= GLOBAL_Points){
+                sprintf(t_b,"Лучший результат:");
+            }
+            else{
+                sprintf(t_b,"Бывший лучший результат:");
+            }
+
+            printResult(best,t_b, UI_r,clrGreen);
 
             UI_r.y = UI_r.y + 200;
             SDL_Color clrWhite = {255,250,255,0};
@@ -446,7 +454,6 @@ int main (int argc, char ** args) {
             struct tm *local = localtime(&now);
             struct Result res = Result_init(local,GLOBAL_Points);
             FixSuccessfulTry("userdata.txt",res);
-            loadsResults("userdata.txt",&bestResult,&lastResult);
 
             EndWinLoop(bestResult,lastResult);
 

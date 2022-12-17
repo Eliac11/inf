@@ -11,7 +11,7 @@
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 600;
 
-const int SHIP_SPEED = 20;
+const int SHIP_SPEED = 1;
 const int GAME_DURATION = 60;
 
 int GLOBAL_Points = 0;
@@ -383,34 +383,30 @@ int main (int argc, char ** args) {
     loadsResults("userdata.txt",&bestResult,&lastResult);
 
     while (run) {
-        while(SDL_PollEvent(&e) != NULL) {
-            if (e.type == SDL_QUIT) {
-                run = 0;
-            }
+        SDL_PollEvent(&e);
+        
 
-            const Uint8* keys = SDL_GetKeyboardState(NULL);
-            
-            if (keys[SDL_SCANCODE_UP]) {
-                if(ChekCanMove(Ship.pos.x ,Ship.pos.y - SHIP_SPEED)){
-                    Ship.pos.y -= SHIP_SPEED;
-                }
+        const Uint8* keys = SDL_GetKeyboardState(NULL);
+
+        if (keys[SDL_SCANCODE_UP]) {
+            if(ChekCanMove(Ship.pos.x ,Ship.pos.y - SHIP_SPEED)){
+                Ship.pos.y -= SHIP_SPEED;
             }
-            if (keys[SDL_SCANCODE_DOWN]) {
-                if(ChekCanMove(Ship.pos.x ,Ship.pos.y + SHIP_SPEED)){
-                    Ship.pos.y += SHIP_SPEED;
-                }
+        }
+        if (keys[SDL_SCANCODE_DOWN]) {
+            if(ChekCanMove(Ship.pos.x ,Ship.pos.y + SHIP_SPEED)){
+                Ship.pos.y += SHIP_SPEED;
             }
-            if (keys[SDL_SCANCODE_RIGHT]) {
-                if(ChekCanMove(Ship.pos.x + SHIP_SPEED,Ship.pos.y)){
-                    Ship.pos.x += SHIP_SPEED;
-                }
+        }
+        if (keys[SDL_SCANCODE_RIGHT]) {
+            if(ChekCanMove(Ship.pos.x + SHIP_SPEED,Ship.pos.y)){
+                Ship.pos.x += SHIP_SPEED;
             }
-            if (keys[SDL_SCANCODE_LEFT]) {
-                if(ChekCanMove(Ship.pos.x - SHIP_SPEED,Ship.pos.y)){
-                    Ship.pos.x -= SHIP_SPEED;
-                }
+        }
+        if (keys[SDL_SCANCODE_LEFT]) {
+            if(ChekCanMove(Ship.pos.x - SHIP_SPEED,Ship.pos.y)){
+                Ship.pos.x -= SHIP_SPEED;
             }
-            
         }
 
         sky_r.x = ((SCREEN_WIDTH - Ship.pos.x) - sky->w)/10;

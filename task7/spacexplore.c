@@ -388,28 +388,29 @@ int main (int argc, char ** args) {
                 run = 0;
             }
 
-            if (e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_UP) {
-                    if(ChekCanMove(Ship.pos.x ,Ship.pos.y - SHIP_SPEED)){
-                        Ship.pos.y -= SHIP_SPEED;
-                    }
-                }
-                if (e.key.keysym.sym == SDLK_DOWN) {
-                    if(ChekCanMove(Ship.pos.x ,Ship.pos.y + SHIP_SPEED)){
-                        Ship.pos.y += SHIP_SPEED;
-                    }
-                }
-                if (e.key.keysym.sym == SDLK_RIGHT) {
-                    if(ChekCanMove(Ship.pos.x + SHIP_SPEED,Ship.pos.y)){
-                        Ship.pos.x += SHIP_SPEED;
-                    }
-                }
-                if (e.key.keysym.sym == SDLK_LEFT) {
-                    if(ChekCanMove(Ship.pos.x - SHIP_SPEED,Ship.pos.y)){
-                        Ship.pos.x -= SHIP_SPEED;
-                    }
+            const Uint8* keys = SDL_GetKeyboardState(NULL);
+            
+            if (keys[SDL_SCANCODE_UP]) {
+                if(ChekCanMove(Ship.pos.x ,Ship.pos.y - SHIP_SPEED)){
+                    Ship.pos.y -= SHIP_SPEED;
                 }
             }
+            if (keys[SDL_SCANCODE_DOWN]) {
+                if(ChekCanMove(Ship.pos.x ,Ship.pos.y + SHIP_SPEED)){
+                    Ship.pos.y += SHIP_SPEED;
+                }
+            }
+            if (keys[SDL_SCANCODE_RIGHT]) {
+                if(ChekCanMove(Ship.pos.x + SHIP_SPEED,Ship.pos.y)){
+                    Ship.pos.x += SHIP_SPEED;
+                }
+            }
+            if (keys[SDL_SCANCODE_LEFT]) {
+                if(ChekCanMove(Ship.pos.x - SHIP_SPEED,Ship.pos.y)){
+                    Ship.pos.x -= SHIP_SPEED;
+                }
+            }
+            
         }
 
         sky_r.x = ((SCREEN_WIDTH - Ship.pos.x) - sky->w)/10;

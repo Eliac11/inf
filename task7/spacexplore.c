@@ -12,7 +12,7 @@ const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 600;
 
 const float SHIP_SPEED = 0.5;
-const int GAME_DURATION = 60;
+const int GAME_DURATION = 10;
 
 int GLOBAL_Points = 0;
 

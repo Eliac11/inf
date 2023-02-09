@@ -30,10 +30,15 @@ def validateJSON(jsonData):
 def ChekCorrect():
     if validateJSON(trans_text.get(1.0, "end")):
         infoL.config(text="JSON Valid")
+        return 1
     else:
         infoL.config(text="Not valid")
+        return 0
 
 def SaveJson():
+
+    if not ChekCorrect():
+        return
 
     foldername = fd.asksaveasfilename()
     with open(foldername,"w") as f:

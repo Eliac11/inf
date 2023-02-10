@@ -49,12 +49,72 @@ class game:
         return 0
 
 
+    def convertcommtoxy(self):
+
+        print("Input Robot Code(press empty enter for stop):")
+
+        listcomm = []
+        listxy = []
+        try:
+            while 1:
+                d = input()
+                if d == "":
+                    break
+                c, k = map(str, d.split(","))
+
+                listcomm += [(c, int(k))]
+        except Exception as e:
+            print(str(e))
+            return 1
+
+        nx, ny = self.getRpos()
+        for codeline, com in enumerate(listcomm):
+            c, k = com
+            dx, dy = 0, 0
+            if c in "LR":
+                dx = k * (1 if c == "R" else -1)
+            elif c in "UD":
+                dy = k * (1 if c == "D" else -1)
+            else:
+                print(f"In LIne {codeline+1} sintacsis is invalid")
+                return 1
+
+
+            while dx != 0 or dy != 0:
+                if dx > 0:
+                    nx += 1
+                    dx -= 1
+                elif dx < 0:
+                    nx -= 1
+                    dx += 1
+
+                if dy > 0:
+                    ny += 1
+                    dy -= 1
+                elif dy < 0:
+                    ny -= 1
+                    dy += 1
+
+                if not self.ChekCanStatePos(nx, ny):
+                    print(f"Error In line {codeline+1} robot goes out of the field")
+                    return 1
+
+                listxy += [[nx, ny]]
+
+        print("Robot code:")
+        for i in listxy:
+            print(",".join(map(str,i)))
+
+        return 0
+
     def run(self, inputmode:int):
 
         if inputmode == 1:
             maininput = self.inputChekXY
-        else:
+        elif inputmode == 2:
             maininput = self.inputChekSide
+        else:
+            maininput = self.convertcommtoxy
 
         while 1:
             try:
@@ -62,8 +122,10 @@ class game:
                     pass
             except Exception as e:
                 print(str(e))
-            print("The robot is now in position: ", *self.getRpos())
+
+            if inputmode != 3:
+                print("The robot is now in position: ", *self.getRpos())
 
 
 if __name__ == "__main__":
-    game().run(2)
+    game().run(3)

@@ -14,11 +14,11 @@ def calculate_statistics(data):
     ndata = []
     for i in data:
         d = [*map(lambda x: x[1], i)]
-        ndata += [[len(i), stat.fmean(d), stat.mode(d), stat.median(d)]]
+        ndata += [[len(i), stat.mean(d), stat.mode(d), stat.median(d)]]
     return ndata
 
 if __name__ == "__main__":
-    print(sys.argv)
+    # print(sys.argv)
     fname = sys.argv[1]
 
     d = read_data_from_file(fname)

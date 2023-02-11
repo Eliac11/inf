@@ -5,7 +5,7 @@ import json
 import time
 
 win = tk.Tk()
-win.title("translate")
+win.title("JsonEditor")
 win.geometry("1000x800")
 
 # print(requests.get("http://kappa.cs.petrsu.ru/~dimitrov/info_1/22_23/test.json").text)

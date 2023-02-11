@@ -399,3 +399,4 @@ FodyWeavers.xsd
 *.exe
 *.o
 task7/userdata.txt
+pySimesrt/.idea/

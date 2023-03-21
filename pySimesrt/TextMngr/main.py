@@ -95,6 +95,6 @@ while 1:
         # вызов команды из списка
         listcommand[c](*par)
         print("ok")
-    # Если ошибка
+    # Если ошибка то выводим ее
     except Exception as e:
         print(e,"not exit")

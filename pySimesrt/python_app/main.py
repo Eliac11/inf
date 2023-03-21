@@ -1,73 +1,34 @@
-class game:
-    def __init__(self,startpos=(1,1)):
-        self.Rpos = startpos
-        self.PoleSize = (100,100)
+# Задаем начальные координаты для робота
+botxy = (1, 1)
 
+#Обевляем функцию с обработкой программы
+def F():
 
-    def setRpos(self,x,y):
-        self.Rpos = (x,y)
-
-    def updateRpos(self,dx,dy):
-        x,y = self.getRpos()
-        self.SetRpos(x+dx, y+dy)
-
-    def getRpos(self) -> tuple:
-        return self.Rpos
-
-    def ChekCanStatePos(self,x,y) -> bool:
-        return not (x < 1 or y < 1 or x > self.PoleSize[0] or y > self.PoleSize[1])
-
-    def inputChekXY(self) -> bool:
-        x, y = map(int, input("input new 'x,y':").split(","))
-
-        if not self.ChekCanStatePos(x, y):
-            print("coordinates outside the field, enter correct data\n\n")
-            return 1
-
-        self.setRpos(x,y)
-        return 0
-
-    def inputChekSide(self) -> bool:
-        c,k = map(str, input("input step '(L/R/U/D),k':").split(","))
-
-        k = int(k)
-
-        nx, ny = self.getRpos()
-        if c in "LR":
-            nx += k * ( 1 if c == "R" else -1)
-        elif c in "UD":
-            ny += k * (1 if c == "D" else -1)
-        else:
-            print("input is invalid")
-            return 1
-
-        if not self.ChekCanStatePos(nx,ny):
-            print("The robot goes out of the field")
-            return 1
-
-        self.setRpos(nx,ny)
-        return 0
-
-
-    def convertcommtoxy(self):
-
-        print("Input Robot Code(press empty enter for stop):")
-
+        print("Введите код робота :")
+        #Лист для того чтобы запомнить все ккоманды
         listcomm = []
-        listxy = []
+
+        # Блок кода где может возникнуть ошибка
         try:
+            # Вечный цикл до того пока юзер не введет пустую строку
             while 1:
                 d = input()
                 if d == "":
                     break
                 c, k = map(str, d.split(","))
-
+                # запомиаем команду
                 listcomm += [(c, int(k))]
+        #Если возникла ошибка то выводи ее и выходим из функции
         except Exception as e:
             print(str(e))
             return 1
 
-        nx, ny = self.getRpos()
+        # Лист для того чтобы запомнить все координаты
+        listxy = []
+        # создаем 2 переменные с новыми координатыми
+        nx, ny = botxy
+
+        # цикл в котором проходимся по всем командам в списке
         for codeline, com in enumerate(listcomm):
             c, k = com
             dx, dy = 0, 0
@@ -76,10 +37,10 @@ class game:
             elif c in "UD":
                 dy = k * (1 if c == "D" else -1)
             else:
-                print(f"In LIne {codeline+1} sintacsis is invalid")
+                print(f"в линии {codeline+1} неверный ввод")
                 return 1
 
-
+            # Цикл в которой двигаем робота и проверяем выход за границы
             while dx != 0 or dy != 0:
                 if dx > 0:
                     nx += 1
@@ -94,38 +55,25 @@ class game:
                 elif dy < 0:
                     ny -= 1
                     dy += 1
-
-                if not self.ChekCanStatePos(nx, ny):
-                    print(f"Error In line {codeline+1} robot goes out of the field")
+                # если выходим выводим ошибку
+                if not (1 <= nx <= 100 and 1 <= ny <= 100):
+                    print(f"Error в линии {codeline+1} робот выходит за поле")
                     return 1
-
+                # добовляем координату в список
                 listxy += [[nx, ny]]
 
-        print("Robot code:")
+        # выводим список координат
+        print("Код для робота:")
         for i in listxy:
             print(",".join(map(str,i)))
-
+        print()
         return 0
-
-    def run(self, inputmode:int):
-
-        if inputmode == 1:
-            maininput = self.inputChekXY
-        elif inputmode == 2:
-            maininput = self.inputChekSide
-        else:
-            maininput = self.convertcommtoxy
-
-        while 1:
-            try:
-                while maininput():
-                    pass
-            except Exception as e:
-                print(str(e))
-
-            if inputmode != 3:
-                print("The robot is now in position: ", *self.getRpos())
-
-
-if __name__ == "__main__":
-    game().run(3)
+# вечный цикл
+while 1:
+    # блок если в нем возникает ошибка мы ее выводим
+    try:
+        # вызываем функцию вечно пока в ней не возникнет ошибка
+        while F():
+            pass
+    except Exception as e:
+        print(str(e))

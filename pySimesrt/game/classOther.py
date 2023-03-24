@@ -65,7 +65,9 @@ class Pole:
 
         self.__fillpole()
         self.__updatelight()
-
+    def regeneratePole(self):
+        self.__fillpole()
+        self.__updatelight()
     def __fillpole(self):
         if self.level == 1:
             for indx, i in enumerate(self.blocks):
@@ -102,6 +104,8 @@ class Pole:
                 y["light"] = False
 
     def __updatelight(self):
+        self.clearlight()
+
         self.blocks[0][0]["light"] = True
 
         flag = True
@@ -141,5 +145,5 @@ class Pole:
 
     def clickblock(self, x, y):
         self.blocks[x][y]["orin"] = (self.blocks[x][y]["orin"] + 1) % 4
-        self.clearlight()
+
         self.__updatelight()

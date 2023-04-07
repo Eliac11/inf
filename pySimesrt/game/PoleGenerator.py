@@ -1,5 +1,5 @@
 import random
-
+import copy
 
 class Slider:
     def __init__(self, pole, convertor):
@@ -52,8 +52,13 @@ class Slider:
 
 
 class PGenerator:
-    def randowzer(self, pole):
-        pass
+    def randowzer(pole):
+
+        pole = copy.deepcopy(pole)
+        for i in pole:
+            for j in i:
+                j["orin"] = random.randint(0, 3)
+        return pole
 
     def getL1(convertor, emptypole):
         slid = Slider(emptypole, convertor)
@@ -88,4 +93,4 @@ class PGenerator:
             #     break
         emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
 
-        return emptypole.copy()
+        return emptypole.copy(), PGenerator.randowzer(emptypole.copy())

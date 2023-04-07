@@ -47,6 +47,7 @@ class Game:
 
     def RestartGame(self):
         self.pole.regeneratePole()
+
     def quitGame(self):
         quit()
 
@@ -78,6 +79,10 @@ class Game:
         except Exception as e:
             print(str(e))
 
+    def update(self):
+        if self.initTime >= self.timeToEnd:
+            self.pole.showSolution()
+
     def run(self):
 
         running = True
@@ -90,6 +95,7 @@ class Game:
                     if event.button == 1:
                         self.__clickUpdate(event.pos)
 
+            self.update()
             self.initTime += self.CLOCK.tick(60)
 
             self.mainscreen.fill((255, 255, 255))

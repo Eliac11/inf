@@ -91,6 +91,8 @@ class Pole:
         self.level = level
         self.blocks = [[{"type": 0, "orin": 0, "light": False} for i in range(size[0])] for i in range(size[1])]
 
+        self.solvedPole = self.blocks.copy()
+
         self.convertor = TypesBlocks()
 
         self.__fillpole()
@@ -100,7 +102,7 @@ class Pole:
         self.__updatelight()
     def __fillpole(self):
         if self.level == 1:
-            PoleGenerator.PGenerator.getL1(self.convertor, self.blocks)
+            self.solvedPole, self.blocks = PoleGenerator.PGenerator.getL1(self.convertor, self.blocks.copy())
 
         elif self.level == 2:
             for indx, i in enumerate(self.blocks):
@@ -167,7 +169,9 @@ class Pole:
                     flag = False
             else:
                 break
-
+    def showSolution(self):
+        self.blocks = self.solvedPole.copy()
+        print("Showw")
 
     def clickblock(self, x, y):
         self.blocks[x][y]["orin"] = (self.blocks[x][y]["orin"] + 1) % 4

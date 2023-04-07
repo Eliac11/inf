@@ -1,6 +1,8 @@
 import random
 import pygame
 
+import PoleGenerator
+
 class TypesBlocks:
     def __init__(self):
         self.points = {
@@ -29,6 +31,29 @@ class TypesBlocks:
             self.points["R"]: self.points["L"],
             self.points["L"]: self.points["R"],
             self.points["C"]: self.points["C"],
+        }
+
+        self.moving = {
+            "D": {
+                "D": {"type": 1, "orin": 0},
+                "R": {"type": 2, "orin": 1},
+                "L": {"type": 2, "orin": 0}
+            },
+            "U": {
+                "U": {"type": 1, "orin": 0},
+                "R": {"type": 2, "orin": 2},
+                "L": {"type": 2, "orin": 3}
+            },
+            "R": {
+                "U": {"type": 2, "orin": 0},
+                "D": {"type": 2, "orin": 3},
+                "R": {"type": 1, "orin": 1}
+            },
+            "L": {
+                "U": {"type": 2, "orin": 1},
+                "D": {"type": 2, "orin": 2},
+                "L": {"type": 1, "orin": 1}
+            }
         }
 
     def convpoints(self,nap,orin):
@@ -75,13 +100,7 @@ class Pole:
         self.__updatelight()
     def __fillpole(self):
         if self.level == 1:
-            for indx, i in enumerate(self.blocks):
-                for indy, j in enumerate(i):
-                    if indx == 0 or indx + 1 == self.size[0]:
-                        j["type"] = 2
-                    else:
-                        j["type"] = 1
-                    j["orin"] = random.randint(0, 3)
+            PoleGenerator.PGenerator.getL1(self.convertor, self.blocks)
 
         elif self.level == 2:
             for indx, i in enumerate(self.blocks):
@@ -94,14 +113,16 @@ class Pole:
                         else:
                             j["type"] = 1
                     j["orin"] = random.randint(0, 3)
+            self.blocks[0][0]["type"] = 0
+            self.blocks[0][-1]["type"] = 0
         else:
             for i in self.blocks:
                 for j in i:
                     j["type"] = random.randint(1, 2)
                     j["orin"] = random.randint(0, 3)
 
-        self.blocks[0][0]["type"] = 0
-        self.blocks[0][-1]["type"] = 0
+            self.blocks[0][0]["type"] = 0
+            self.blocks[0][-1]["type"] = 0
 
     def clearlight(self):
         for x in self.blocks:

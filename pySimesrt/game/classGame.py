@@ -35,7 +35,7 @@ class Game:
 
     def __pole_init(self):
         self.blocksize = (self.winsize[0] - 20) // (self.pole_size[0])
-        self.pole = classOther.Pole(self.pole_size)
+        self.pole = classOther.Pole(self.pole_size, self.__nowlevel)
         self.convertor = self.pole.convertor
 
     def __drawPole(self):

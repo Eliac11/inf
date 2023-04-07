@@ -94,3 +94,42 @@ class PGenerator:
         emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
 
         return emptypole.copy(), PGenerator.randowzer(emptypole.copy())
+
+    def getL2(convertor, emptypole):
+        slid = Slider(emptypole, convertor)
+
+        slid.laststep = "R"
+        slid.nowpose = [1, 0]
+        emptypole[0][0]["type"] = 0
+        emptypole[0][0]["orin"] = 1
+
+        nownap = 1
+        while 1:
+            if nownap == 1:
+                if slid.canstep("R"):
+                    slid.move("R")
+
+                    if slid.canstep("D") and random.randint(0, 10) == 3:
+                        slid.move("D")
+
+                else:
+                    nownap = -1
+                    if slid.canstep("D"):
+                        slid.move("D")
+                    else:
+                        break
+            elif nownap == -1:
+                if slid.canstep("L"):
+                    slid.move("L")
+                    if slid.canstep("D") and random.randint(0, 10) == 3:
+                        slid.move("D")
+                else:
+                    nownap = 1
+                    if slid.canstep("D"):
+                        slid.move("D")
+                    else:
+                        break
+
+        emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
+
+        return emptypole.copy(), PGenerator.randowzer(emptypole.copy())

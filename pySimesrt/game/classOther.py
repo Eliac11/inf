@@ -105,18 +105,7 @@ class Pole:
             self.solvedPole, self.blocks = PoleGenerator.PGenerator.getL1(self.convertor, self.blocks.copy())
 
         elif self.level == 2:
-            for indx, i in enumerate(self.blocks):
-                for indy, j in enumerate(i):
-                    if indx == 0 or indx + 1 == self.size[0]:
-                        j["type"] = 2
-                    else:
-                        if indy == 0 or indy + 1 == self.size[0]:
-                            j["type"] = random.randint(1, 2)
-                        else:
-                            j["type"] = 1
-                    j["orin"] = random.randint(0, 3)
-            self.blocks[0][0]["type"] = 0
-            self.blocks[0][-1]["type"] = 0
+            self.solvedPole, self.blocks = PoleGenerator.PGenerator.getL2(self.convertor, self.blocks.copy())
         else:
             for i in self.blocks:
                 for j in i:
@@ -171,6 +160,7 @@ class Pole:
                 break
     def showSolution(self):
         self.blocks = self.solvedPole.copy()
+        self.__updatelight()
         print("Showw")
 
     def clickblock(self, x, y):

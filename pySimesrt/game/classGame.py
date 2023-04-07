@@ -20,7 +20,7 @@ class Game:
         self.__pole_init()
 
         self.initTime = 0
-        self.timeToEnd = 2 * 60*1000
+        self.timeToEnd = 100 #2 * 60*1000
 
         self.timerUI = classMyUI.TimeLabel((self.winsize[0]//2 - 50, self.winsize[1] - 50), (100, 50), (0, 100, 0))
         self.buttons = [
@@ -46,6 +46,7 @@ class Game:
                 self.__drawblock(x*self.blocksize + 10, y*self.blocksize + 10, b)
 
     def RestartGame(self):
+        self.initTime = 0
         self.pole.regeneratePole()
 
     def quitGame(self):

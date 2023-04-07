@@ -33,6 +33,7 @@ class TimeLabel:
         self.bgcolor = backgroundcolor
 
     def draw(self, screen, time=0):
+        time = time if time >= 0 else 0
         self.rendertext = FONT.render(str(time), True, (0, 0, 0))
         pygame.draw.rect(screen, self.bgcolor, self.pos + self.size)
         screen.blit(self.rendertext, self.pos)

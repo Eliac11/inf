@@ -11,12 +11,17 @@ class TypesBlocks:
                 "C": (1, 1)
         }
 
-        self.transition = {"U":"R", "R":"D", "D":"L", "L":"U","C":"C"}
+        self.transition = {"U": "R",
+                           "R": "D",
+                           "D": "L",
+                           "L": "U",
+                           "C": "C"}
 
         self.types = {
             0: ("C", "C", "U"),
             1: ("D", "C", "U"),
             2: ("L", "C", "U"),
+            # 3: ("L", "U", "D", "R")
         }
         self.connection = {
             self.points["U"]: self.points["D"],
@@ -56,10 +61,10 @@ class TypesBlocks:
 
 
 class Pole:
-    def __init__(self, size=(10,10), level=2):
+    def __init__(self, size=(10,10), level=3):
         self.size = size
         self.level = level
-        self.blocks = [[{"type":0, "orin":0,"light":False} for i in range(size[0])] for i in range(size[1])]
+        self.blocks = [[{"type": 0, "orin": 0, "light": False} for i in range(size[0])] for i in range(size[1])]
 
         self.convertor = TypesBlocks()
 

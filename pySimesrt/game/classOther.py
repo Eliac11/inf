@@ -156,6 +156,19 @@ class Pole:
         self.__updatelight()
         print("Showw")
 
+    def checkPoleAssembled(self):
+        fullcount = self.size[0]*self.size[1]
+        count = 0
+
+        for i in self.blocks:
+            for j in i:
+                if j["light"]:
+                    count += 1
+        if fullcount == count:
+            return 1
+        else:
+            return 0
+
     def clickblock(self, x, y):
         self.blocks[x][y]["orin"] = (self.blocks[x][y]["orin"] + 1) % 4
 

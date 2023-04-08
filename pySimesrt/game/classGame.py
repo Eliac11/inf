@@ -1,5 +1,10 @@
 import pygame
 pygame.init()
+
+from tkinter import messagebox as mb
+from tkinter import *
+root = Tk()
+root.withdraw()
 import classOther
 import classMyUI
 from sittingsloader import GetSittings
@@ -20,7 +25,7 @@ class Game:
         self.__pole_init()
 
         self.initTime = 0
-        self.timeToEnd = 100 #2 * 60*1000
+        self.timeToEnd = 2 * 60*1000
 
         self.timerUI = classMyUI.TimeLabel((self.winsize[0]//2 - 50, self.winsize[1] - 50), (100, 50), (0, 100, 0))
         self.buttons = [
@@ -83,6 +88,11 @@ class Game:
     def update(self):
         if self.initTime >= self.timeToEnd:
             self.pole.showSolution()
+
+        if self.pole.checkPoleAssembled():
+            mb.showinfo(title="Win", message="You are winner")
+
+            self.RestartGame()
 
     def run(self):
 

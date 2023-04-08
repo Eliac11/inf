@@ -103,17 +103,10 @@ class Pole:
     def __fillpole(self):
         if self.level == 1:
             self.solvedPole, self.blocks = PoleGenerator.PGenerator.getL1(self.convertor, self.blocks.copy())
-
         elif self.level == 2:
             self.solvedPole, self.blocks = PoleGenerator.PGenerator.getL2(self.convertor, self.blocks.copy())
         else:
-            for i in self.blocks:
-                for j in i:
-                    j["type"] = random.randint(1, 2)
-                    j["orin"] = random.randint(0, 3)
-
-            self.blocks[0][0]["type"] = 0
-            self.blocks[0][-1]["type"] = 0
+            self.solvedPole, self.blocks = PoleGenerator.PGenerator.getL3(self.convertor, self.blocks.copy())
 
     def clearlight(self):
         for x in self.blocks:

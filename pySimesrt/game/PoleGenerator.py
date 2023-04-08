@@ -98,6 +98,41 @@ class PGenerator:
     def getL2(convertor, emptypole):
         slid = Slider(emptypole, convertor)
 
+        slid.laststep = "D"
+        slid.nowpose = [0, 1]
+        emptypole[0][0]["type"] = 0
+        emptypole[0][0]["orin"] = 2
+
+        nownap = 1
+        while 1:
+            if nownap == 1:
+                if slid.canstep("D"):
+                    slid.move("D")
+                else:
+                    nownap = -1
+                    if slid.canstep("R"):
+                        slid.move("R")
+                    else:
+                        break
+            elif nownap == -1:
+                if slid.canstep("U"):
+                    slid.move("U")
+                else:
+                    nownap = 1
+                    if slid.canstep("R"):
+                        slid.move("R")
+                    else:
+                        break
+
+            # if slid.count > 6:
+            #     break
+        emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
+
+        return emptypole.copy(), PGenerator.randowzer(emptypole.copy())
+
+    def getL3(convertor, emptypole):
+        slid = Slider(emptypole, convertor)
+
         slid.laststep = "R"
         slid.nowpose = [1, 0]
         emptypole[0][0]["type"] = 0
@@ -105,30 +140,40 @@ class PGenerator:
 
         nownap = 1
         while 1:
+            if slid.count - 100 == slid.fullcount:
+                break
+
             if nownap == 1:
                 if slid.canstep("R"):
                     slid.move("R")
-
-                    if slid.canstep("D") and random.randint(0, 10) == 3:
-                        slid.move("D")
-
                 else:
-                    nownap = -1
+                    nownap = 2
                     if slid.canstep("D"):
                         slid.move("D")
                     else:
                         break
-            elif nownap == -1:
-                if slid.canstep("L"):
+
+
+            elif nownap == 2:
+                if slid.canstep("L") and not slid.visited("L"):
                     slid.move("L")
-                    if slid.canstep("D") and random.randint(0, 10) == 3:
-                        slid.move("D")
+                else:
+                    nownap = 3
+
+            elif nownap == 3:
+                if slid.canstep("D"):
+                    slid.move("D")
+                else:
+                    nownap = 4
+                    if slid.canstep("R") and slid.laststep != "L":
+                        slid.move("R")
+                    else:
+                        break
+            elif nownap == 4:
+                if slid.canstep("U") and not slid.visited("U"):
+                    slid.move("U")
                 else:
                     nownap = 1
-                    if slid.canstep("D"):
-                        slid.move("D")
-                    else:
-                        break
 
         emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
 

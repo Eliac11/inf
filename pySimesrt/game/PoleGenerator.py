@@ -1,7 +1,8 @@
 import random
 import copy
-
+# Бегунок рисующий линию на поле
 class Slider:
+    # Инициализация класса
     def __init__(self, pole, convertor):
         self.pole = pole
         self.convertor = convertor
@@ -13,6 +14,7 @@ class Slider:
         self.count = 0
         self.fullcount = len(pole)*len(pole[0])
 
+    # высчитывание следующей координаты при шаге
     def mathXY(self, nap):
 
         pose = self.nowpose.copy()
@@ -27,6 +29,7 @@ class Slider:
 
         return pose
 
+    # Движение слайдера и записывание в клетку ее тип и поворот
     def move(self, nap):
 
         info = self.convertor.moving[self.laststep][nap]
@@ -38,12 +41,14 @@ class Slider:
         self.nowpose = self.mathXY(nap)
         self.laststep = nap
 
+    # проверка на возможность сделать шаг
     def canstep(self, nap):
         pose = self.mathXY(nap)
         if pose[0] < 0 or pose[1] < 0 or pose[0] >= len(self.pole) or pose[1] >= len(self.pole[0]):
             return 0
         return 1
 
+    # Проверка на посещение клетки на следующем шаге
     def visited(self, nap):
         pose = self.mathXY(nap)
         if pose in self.path:
@@ -52,6 +57,7 @@ class Slider:
 
 
 class PGenerator:
+    # метод рандомного поворота кадой клетки
     def randowzer(pole):
 
         pole = copy.deepcopy(pole)
@@ -60,9 +66,12 @@ class PGenerator:
                 j["orin"] = random.randint(0, 3)
         return pole
 
+    # генерация первого уровня
     def getL1(convertor, emptypole):
+        # созданпие слайдера и передача ему пустого поля
         slid = Slider(emptypole, convertor)
 
+        # устанавливаем первый шаг и записываем тип в первую клетку
         slid.laststep = "R"
         slid.nowpose = [1, 0]
         emptypole[0][0]["type"] = 0
@@ -91,13 +100,16 @@ class PGenerator:
 
             # if slid.count > 6:
             #     break
+        # записываем последнюю клетку как конечную (такая половинчитая)
         emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
 
         return emptypole.copy(), PGenerator.randowzer(emptypole.copy())
 
     def getL2(convertor, emptypole):
+        # созданпие слайдера и передача ему пустого поля
         slid = Slider(emptypole, convertor)
 
+        # устанавливаем первый шаг и записываем тип в первую клетку
         slid.laststep = "D"
         slid.nowpose = [0, 1]
         emptypole[0][0]["type"] = 0
@@ -131,8 +143,10 @@ class PGenerator:
         return emptypole.copy(), PGenerator.randowzer(emptypole.copy())
 
     def getL3(convertor, emptypole):
+        # созданпие слайдера и передача ему пустого поля
         slid = Slider(emptypole, convertor)
 
+        # устанавливаем первый шаг и записываем тип в первую клетку
         slid.laststep = "R"
         slid.nowpose = [1, 0]
         emptypole[0][0]["type"] = 0
@@ -140,8 +154,9 @@ class PGenerator:
 
         nownap = 1
         while 1:
-            if slid.count - 100 == slid.fullcount:
-                break
+            # я хз что оно делало и с этем и без этого одинокого работает
+            # if slid.count - 100 == slid.fullcount:
+            #     break
 
             if nownap == 1:
                 if slid.canstep("R"):
@@ -174,7 +189,7 @@ class PGenerator:
                     slid.move("U")
                 else:
                     nownap = 1
-
+        # записываем последнюю клетку как конечную (такая половинчитая)
         emptypole[slid.nowpose[0]][slid.nowpose[1]]["type"] = 0
 
         return emptypole.copy(), PGenerator.randowzer(emptypole.copy())

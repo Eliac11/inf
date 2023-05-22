@@ -2,9 +2,11 @@ import random
 import pygame
 
 import PoleGenerator
-
+# касс с прописаными типами блоков
 class TypesBlocks:
     def __init__(self):
+
+        # ключевые точки в блоке
         self.points = {
                 "D": (1, 2),
                 "U": (1, 0),
@@ -12,19 +14,21 @@ class TypesBlocks:
                 "L": (0, 1),
                 "C": (1, 1)
         }
-
+        # Переход из одной точки в другую при повороте
         self.transition = {"U": "R",
                            "R": "D",
                            "D": "L",
                            "L": "U",
                            "C": "C"}
-
+        # типы блоков
         self.types = {
-            0: ("C", "C", "U"),
-            1: ("D", "C", "U"),
-            2: ("L", "C", "U"),
+            0: ("C", "C", "U"), # начальный тип
+            1: ("D", "C", "U"), # прямая клетка
+            2: ("L", "C", "U"), # поворотная клетка
             # 3: ("L", "U", "D", "R")
         }
+
+        # Логика соедениения соседних клеток (Верхняя сторона одной клетки соеденина с нижней сотороной другой и т.д.)
         self.connection = {
             self.points["U"]: self.points["D"],
             self.points["D"]: self.points["U"],
@@ -32,7 +36,7 @@ class TypesBlocks:
             self.points["L"]: self.points["R"],
             self.points["C"]: self.points["C"],
         }
-
+        # какой тип и орентация клетки дожены быть при  переходе из нее в следующуу клетку
         self.moving = {
             "D": {
                 "D": {"type": 1, "orin": 0},
@@ -56,6 +60,7 @@ class TypesBlocks:
             }
         }
 
+    # Трансляция стороны клетки при повороте
     def convpoints(self,nap,orin):
         nap = nap
         for i in range(orin):
@@ -63,6 +68,7 @@ class TypesBlocks:
 
         return nap
 
+    # высчитывать точки линии внутри одной клетки с учетом ее поворота
     def GetValidPoints(self,type,orintation):
 
         poses = list(self.types[type])
@@ -71,6 +77,7 @@ class TypesBlocks:
 
         return points
 
+    # Конвертация локальных координат внутри клетки в глобальные на поле для отрисовки
     def counvertcoord(self, x, y, size, ty, ori) -> list:
 
         points = self.GetValidPoints(ty,ori)

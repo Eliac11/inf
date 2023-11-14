@@ -1,9 +1,10 @@
 from socket import *
 import base64
 import ssl
-msg = "\r\n Я люблю компьютерные сети!"
-endmsg = "\r\n.\r\n"
+import CreatorMsg
 
+
+endmsg = "\r\n.\r\n"
 # Выбираем почтовый сервер
 mailserver = ("smtp.mail.ru", 465)  # Замените "smtp.example.com" на ваш SMTP-сервер и 25 на порт
 
@@ -65,7 +66,7 @@ recv4 = clientSocket.recv(1024)
 print(recv4)
 
 # Отправляем данные сообщения.
-clientSocket.send(msg.encode())
+clientSocket.send(CreatorMsg.create_mime_message().as_bytes())
 
 # Сообщение завершается одинарной точкой.
 clientSocket.send(endmsg.encode())

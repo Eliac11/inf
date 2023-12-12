@@ -1,0 +1,12 @@
+15) 7
+
+16) паралельно
+
+---
+
+17) 401 Unauthorized
+
+18) http.authorization
+
+19) login:password  Basic token
+

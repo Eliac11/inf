@@ -14,6 +14,8 @@ OBJS = $(SRCS:.c=.o)
 # Путь для установки
 INSTALL_DIR = install
 
+
+
 # Цели сборки
 all: $(TARGET)
 
@@ -49,4 +51,10 @@ distclean: clean
 help:
 	@echo "Usage: make [all|test|install|dist|doc|clean|distclean|help]"
 
-.PHONY: all test install dist doc clean distclean help
+lalala:
+	@echo "lalala"
+
+.DEFAULT:
+	@echo "lalallalalala"
+
+.PHONY: all test install dist doc clean distclean help 

@@ -1,0 +1,56 @@
+1) Default Server:  ns.petrsu.ru
+Address:  193.232.254.218
+
+
+2) 
+Server:  ns.petrsu.ru
+Address:  193.232.254.218
+petrsu.ru
+        primary name server = ns.petrsu.ru
+        responsible mail addr = noc.petrsu.ru
+        serial  = 2020695019
+        refresh = 10800 (3 hours)
+        retry   = 1800 (30 mins)
+        expire  = 3600000 (41 days 16 hours)
+        default TTL = 900 (15 mins)
+
+
+3) Server:  ns.petrsu.ru
+Address:  193.232.254.218
+
+Name:    petrsu.ru
+Address:  194.85.173.228
+
+4) UDP
+
+
+
+
+8) Было два ответа, в которых содержится информация об имени
+хоста, классе (типе сети), типе ресурсной записи, времени ее жизни в кэше
+(TTL),размере данных и IP-адресе.
+Ответы
+www.ietf.org: type A, class IN, addr 209.173.57.180
+Name: www.ietf.org Type: A (Host address) Class: IN
+(0x0001)
+Time to live: 30 minutes
+Data length: 4
+Addr: 209.173.57.180
+www.ietf.org: type A, class IN, addr 209.173.53.180
+Name: www.ietf.org Type: A (Host address) Class: IN
+(0x0001)
+Time to live: 30 minutes
+Data length: 4
+Addr: 209.173.53.180
+9) Первый пакет с флагом SYN отправлен на адрес 209.173.57.180 –
+первый IP-адрес, полученный в ответном сообщении DNS.
+
+10) Нет
+
+
+11) Порт назначения запроса DNS – 53 , исходящий порт DNS ответа
+такой же.
+
+
+12)
+

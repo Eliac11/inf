@@ -67,7 +67,7 @@ def generate_obsidian_project(graph, output_directory):
             if info['imports']:
                 file.write("## Dependencies\n")
                 for dependency in info['imports']:
-                    file.write(f"- [[{dependency}]]\n")
+                    file.write(f"- [[{dependency}.py]]\n")
 
 if __name__ == "__main__":
     project_directory = "C:\work\interaction_api_vdnh"

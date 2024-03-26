@@ -29,13 +29,14 @@ def generate_dependency_graph(start_directory):
 
     for foldername, _, filenames in os.walk(start_directory):
 
-        if r"C:\work\interaction_api_vdnh\venv" in foldername:
+        if r"venv" in foldername:
             continue
+        print(foldername)
         for filename in filenames:
             if filename.endswith('.py'):
                 file_path = os.path.join(foldername, filename)
                 imports, classes, global_vars = get_file_info(file_path)
-
+                print(imports)
                 dependency_graph[filename] = {
                     'imports': list(imports),
                     'classes': classes,
@@ -70,8 +71,8 @@ def generate_obsidian_project(graph, output_directory):
                     file.write(f"- [[{dependency}.py]]\n")
 
 if __name__ == "__main__":
-    project_directory = "C:\work\interaction_api_vdnh"
-    obsidian_output_directory = "./data/api_vdnhClasses"
+    project_directory = "C:\work\interaction_editor_api_vdnh"
+    obsidian_output_directory = "./data/api_vdnh_creatorClasses"
 
     dependency_graph = generate_dependency_graph(project_directory)
     generate_obsidian_project(dependency_graph, obsidian_output_directory)

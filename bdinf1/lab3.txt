@@ -1,4 +1,0 @@
-tblClient --> tblAccount
-   |             |
-   V             V
-tblAccountType --> tblOperationType --> tblOperation

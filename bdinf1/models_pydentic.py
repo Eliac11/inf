@@ -3,6 +3,8 @@ from typing import Optional
 from datetime import date
 
 
+FORMS = ["formAccounts"]
+
 class pdtClient(BaseModel):
     intClientId: Optional[int]
     txtClientSurname: str
@@ -66,3 +68,14 @@ class ptdFormAccounts(BaseModel):
     typeAccount: str
     datAccountBegin: date
     txtAccountNumber: str
+
+
+class NamesTables(BaseModel):
+    name: str
+
+
+
+
+
+class NamesForms(BaseModel):
+    name: str

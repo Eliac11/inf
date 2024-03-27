@@ -58,3 +58,11 @@ class pdtOperation(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+
+class ptdFormAccounts(BaseModel):
+    clientFullName: str
+    typeAccount: str
+    datAccountBegin: date
+    txtAccountNumber: str

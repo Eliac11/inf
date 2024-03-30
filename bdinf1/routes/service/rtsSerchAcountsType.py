@@ -1,0 +1,37 @@
+from sqlalchemy.orm import Session
+from typing import List
+from collections import defaultdict
+
+from fastapi import Depends, APIRouter, Request
+from fastui import FastUI, AnyComponent, components as fastUIcomponents
+from fastui.events import BackEvent
+from fastui.components.display import DisplayMode, DisplayLookup
+from fastui.events import GoToEvent, BackEvent
+from pydantic import parse_obj_as, BaseModel, Field
+from fastui.forms import FormFile, SelectSearchResponse, Textarea, fastui_form
+
+from sqlalchemy.orm import Session
+
+from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, ptdFormAccounts, NamesForms, NamesTables, FORMS
+from database import get_db, metadata
+
+from httpx import AsyncClient
+
+
+router = APIRouter()
+
+
+@router.get('/service/searchAcountsType', response_model=SelectSearchResponse)
+async def search_view(request: Request, q: str, db: Session = Depends(get_db)) -> SelectSearchResponse:
+
+    data = []
+    atypes = db.query(tblAccountType).all()
+    for i in atypes:
+        ditem = {"label":i.txtAccountTypeName, "value": str(i.intAccountTypeId)}
+        data.append(ditem)
+
+    blocks = {}
+    blocks["Clients"] = data
+    options = [{'label': k, 'options': v} for k, v in blocks.items()]
+    return SelectSearchResponse(options=options)

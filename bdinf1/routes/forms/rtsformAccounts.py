@@ -32,6 +32,8 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
                     components=[fastUIcomponents.Text(text='Back')], on_click=BackEvent()),
                 # renders `<h2>Users</h2>`
                 fastUIcomponents.Heading(text='FormAccounts', level=2),
+                fastUIcomponents.Link(
+                    components=[fastUIcomponents.Text(text='New Account')], on_click=GoToEvent(url='/forms/formNewAccounts')),
                 fastUIcomponents.Table(
                     data=faccs
                 ),

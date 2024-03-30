@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import date
 
 
@@ -63,7 +63,8 @@ class pdtOperation(BaseModel):
 
 
 
-class ptdFormAccounts(BaseModel):
+class pdtFormAccounts(BaseModel):
+    intAccountId: Optional[int]
     clientFullName: str
     typeAccount: str
     datAccountBegin: date

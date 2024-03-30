@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from faker import Faker
 from random import randint, choice
 from datetime import datetime, timedelta
-from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
 
 
 # engine = create_engine('sqlite:///Bank.db')

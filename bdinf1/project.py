@@ -10,15 +10,15 @@ from pydantic import BaseModel, Field, parse_obj_as
 
 from sqlalchemy.orm import Session
 
-from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, ptdFormAccounts, NamesForms, NamesTables
-from models_pydentic import FORMS
-from database import get_db, metadata
+from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables
+from dbtools.models_pydentic import FORMS
+from dbtools.database import get_db, metadata
 
 from routes.tables import rtstblAccount, rtstblClient, rtstblAccountType, rtstblOperation, rtstblOperationType
 from routes import rtsmain
-from routes.forms import rtsformAccounts, rtsformNewAccount
-from routes.service import rtsSerchAcountsType, rtsSerchClients
+from routes.forms import rtsformAccounts, rtsformNewAccount, rtsformAccountInfo
+from routes.service import rtsSerchAcountsType, rtsSerchClients, rtsSerchOperationType
 
 app = FastAPI()
 
@@ -35,10 +35,12 @@ app.include_router(rtstblOperationType.router)
 #forms
 app.include_router(rtsformAccounts.router)
 app.include_router(rtsformNewAccount.router)
+app.include_router(rtsformAccountInfo.router)
 
 #services
 app.include_router(rtsSerchAcountsType.router)
 app.include_router(rtsSerchClients.router)
+app.include_router(rtsSerchOperationType.router)
 
 @app.get('/api/')
 async def gotomain():

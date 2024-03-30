@@ -10,9 +10,9 @@ from pydantic import parse_obj_as
 
 from sqlalchemy.orm import Session
 
-from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, ptdFormAccounts, NamesForms, NamesTables, FORMS
-from database import get_db , metadata
+from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables, FORMS
+from dbtools.database import get_db , metadata
 
 router = APIRouter()
 
@@ -22,10 +22,11 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
 
     faccs = []
     for fac in accounts:
-        faccs += [ptdFormAccounts(clientFullName=f"{fac.client.txtClientSurname} {fac.client.txtClientName} {fac.client.txtClientSecondName}",
-                                  typeAccount=fac.account_type.txtAccountTypeName, datAccountBegin=fac.datAccountBegin, txtAccountNumber=fac.txtAccountNumber)]
+        faccs += [pdtFormAccounts(clientFullName=f"{fac.client.txtClientSurname} {fac.client.txtClientName} {fac.client.txtClientSecondName}",
+                                  typeAccount=fac.account_type.txtAccountTypeName, datAccountBegin=fac.datAccountBegin, txtAccountNumber=fac.txtAccountNumber, intAccountId=fac.intAccountId)]
 
     return [
+        
         fastUIcomponents.Page(  # Page provides a basic container for components
             components=[
                 fastUIcomponents.Link(
@@ -35,7 +36,13 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
                 fastUIcomponents.Link(
                     components=[fastUIcomponents.Text(text='New Account')], on_click=GoToEvent(url='/forms/formNewAccounts')),
                 fastUIcomponents.Table(
-                    data=faccs
+                    data=faccs,
+                    columns=[
+                        DisplayLookup(field="clientFullName"),
+                        DisplayLookup(field="typeAccount"),
+                        DisplayLookup(field="datAccountBegin"),
+                        DisplayLookup(field="txtAccountNumber",on_click=GoToEvent(url="/forms/formAccountInfo?account_id={intAccountId}")),
+                    ]
                 ),
             ]
         ),

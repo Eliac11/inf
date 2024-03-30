@@ -12,9 +12,9 @@ from pydantic import parse_obj_as, BaseModel, Field, validator
 
 from sqlalchemy.orm import Session
 
-from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, ptdFormAccounts, NamesForms, NamesTables, FORMS
-from database import get_db , metadata
+from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables, FORMS
+from dbtools.database import get_db , metadata
 
 
 router = APIRouter()
@@ -22,7 +22,7 @@ router = APIRouter()
 
 class SelectForm(BaseModel):
     intAccountTypeId: str = Field(json_schema_extra={'search_url': '/service/searchAcountsType'}, title="Account Type")
-    intClientId: str = Field(json_schema_extra={'search_url': '/service/rtsSerchClients'}, title="Client name")
+    intClientId: str = Field(json_schema_extra={'search_url': '/service/serchClients'}, title="Client name")
     datAccountBegin: date = Field(title='Account Begin')
     datAccountEnd: date = Field(title='Account End')
     txtAccountNumber: str = Field(max_length=10, min_length=10, pattern=r"[0-9]", title='Account Number')
@@ -40,10 +40,15 @@ class SelectForm(BaseModel):
 def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
 
     return [
+        fastUIcomponents.Page(  # Page provides a basic container for components
+            components=[
                 fastUIcomponents.Heading(text='New Account', level= 1),
+                fastUIcomponents.Link(
+                    components=[fastUIcomponents.Text(text='Back')], on_click=BackEvent()),
                 fastUIcomponents.Heading(text='Create new account', level = 2),
                 fastUIcomponents.ModelForm(model=SelectForm, display_mode='page', submit_url='/api/forms/formNewAccounts'),
-            ]
+            ])
+        ]
 
 
 

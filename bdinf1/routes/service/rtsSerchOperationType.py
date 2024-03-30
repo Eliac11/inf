@@ -22,13 +22,13 @@ from httpx import AsyncClient
 router = APIRouter()
 
 
-@router.get('/service/searchAcountsType', response_model=SelectSearchResponse)
+@router.get('/service/searchOperationType', response_model=SelectSearchResponse)
 async def search_view(request: Request, q: str, db: Session = Depends(get_db)) -> SelectSearchResponse:
 
     data = []
-    atypes = db.query(tblAccountType).all()
+    atypes = db.query(tblOperationType).all()
     for i in atypes:
-        ditem = {"label":i.txtAccountTypeName, "value": str(i.intAccountTypeId)}
+        ditem = {"label":i.txtOperationTypeName, "value": str(i.intOperationTypeId)}
         data.append(ditem)
 
     blocks = {}

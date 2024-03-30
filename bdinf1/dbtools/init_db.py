@@ -1,4 +1,4 @@
-import models
+import dbtools.models as models
 
 from sqlalchemy import create_engine
 

@@ -12,9 +12,9 @@ from fastui.forms import FormFile, SelectSearchResponse, Textarea, fastui_form
 
 from sqlalchemy.orm import Session
 
-from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, ptdFormAccounts, NamesForms, NamesTables, FORMS
-from database import get_db, metadata
+from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables, FORMS
+from dbtools.database import get_db, metadata
 
 from httpx import AsyncClient
 
@@ -22,7 +22,7 @@ from httpx import AsyncClient
 router = APIRouter()
 
 
-@router.get('/service/rtsSerchClients', response_model=SelectSearchResponse)
+@router.get('/service/serchClients', response_model=SelectSearchResponse)
 async def search_view(request: Request, q: str, db: Session = Depends(get_db)) -> SelectSearchResponse:
 
     data = []

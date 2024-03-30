@@ -8,9 +8,9 @@ from pydantic import parse_obj_as
 
 from sqlalchemy.orm import Session
 
-from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, ptdFormAccounts, NamesForms, NamesTables
-from database import get_db
+from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables
+from dbtools.database import get_db
 
 
 router = APIRouter()

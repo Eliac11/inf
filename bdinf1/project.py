@@ -18,7 +18,7 @@ from dbtools.database import get_db, metadata
 from routes.tables import rtstblAccount, rtstblClient, rtstblAccountType, rtstblOperation, rtstblOperationType
 from routes import rtsmain
 from routes.forms import rtsformAccounts, rtsformNewAccount, rtsformAccountInfo
-from routes.service import rtsSerchAcountsType, rtsSerchClients, rtsSerchOperationType
+from routes.service import rtsSerchAcountsType, rtsSerchClients, rtsSerchOperationType, rtsDownloadFiles
 
 app = FastAPI()
 
@@ -41,6 +41,7 @@ app.include_router(rtsformAccountInfo.router)
 app.include_router(rtsSerchAcountsType.router)
 app.include_router(rtsSerchClients.router)
 app.include_router(rtsSerchOperationType.router)
+app.include_router(rtsDownloadFiles.router)
 
 @app.get('/api/')
 async def gotomain():

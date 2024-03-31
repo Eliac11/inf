@@ -42,7 +42,15 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
                         DisplayLookup(field='name', on_click=GoToEvent(
                             url='/forms/{name}')),
                     ],
-                )
+                ),
+                fastUIcomponents.Div(
+                    class_name='border-top mt-3 pt-1',
+                    components=[
+                        fastUIcomponents.Heading(text='Reports', level=2),
+                        fastUIcomponents.Button(text="Report Accounts", on_click=GoToEvent(url='/service/downloadFile?reptype=allAcc', target='_blank')),
+                        fastUIcomponents.Button(text="Report End Accounts", class_name='+ ms-4', on_click=GoToEvent(url='/service/downloadFile?reptype=endAcc', target='_blank')),
+                        fastUIcomponents.Button(text="Report Info Account", class_name='+ ms-4', on_click=GoToEvent(url='/', target='_blank'))
+                ])
             ]
         ),
     ]

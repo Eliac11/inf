@@ -80,3 +80,6 @@ class NamesTables(BaseModel):
 
 class NamesForms(BaseModel):
     name: str
+
+class FormDownloadAccountInfo(BaseModel):
+    account_number: str = Field(json_schema_extra={'search_url': '/service/searchAcounts', 'placeholder': 'Report Account Info'})

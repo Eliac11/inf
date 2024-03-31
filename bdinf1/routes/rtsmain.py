@@ -6,16 +6,19 @@ from fastui import FastUI, AnyComponent, components as fastUIcomponents
 from fastui.events import BackEvent
 from fastui.components.display import DisplayMode, DisplayLookup
 from fastui.events import GoToEvent, BackEvent
-from pydantic import parse_obj_as
+from pydantic import parse_obj_as, Field
+import pydantic
 
 from sqlalchemy.orm import Session
 
 from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables, FORMS
+from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables, FORMS, FormDownloadAccountInfo
 from dbtools.database import get_db , metadata
 
 
 router = APIRouter()
+
+
 
 
 @router.get("/api/main", response_model=FastUI, response_model_exclude_none=True)
@@ -49,8 +52,16 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
                         fastUIcomponents.Heading(text='Reports', level=2),
                         fastUIcomponents.Button(text="Report Accounts", on_click=GoToEvent(url='/service/downloadFile?reptype=allAcc', target='_blank')),
                         fastUIcomponents.Button(text="Report End Accounts", class_name='+ ms-4', on_click=GoToEvent(url='/service/downloadFile?reptype=endAcc', target='_blank')),
-                        fastUIcomponents.Button(text="Report Info Account", class_name='+ ms-4', on_click=GoToEvent(url='/', target='_blank'))
-                ])
+                        fastUIcomponents.ModelForm(
+                                            model=FormDownloadAccountInfo,
+                                            submit_url='/service/downloadFileFromForm',
+                                            method='POST',
+                                            submit_on_change=True,
+                                            display_mode='inline',
+                                            class_name="row row-cols-lg-4 align-items-center justify-content-start mt-4"
+                                        )
+                    ]
+                )
             ]
         ),
     ]

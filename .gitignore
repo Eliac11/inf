@@ -403,3 +403,4 @@ pySimesrt/.idea/
 simestr3/nettools/lab4/data/*
 simestr3/nettools/lab4/venv/*
 bdinf1/venv/*
+*.pdf

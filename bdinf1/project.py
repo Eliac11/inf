@@ -2,7 +2,7 @@ from datetime import date
 from typing import List
 
 from fastapi import FastAPI, HTTPException, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, PlainTextResponse, FileResponse
 from fastui import FastUI, AnyComponent, prebuilt_html, components as fastUIcomponents
 from fastui.components.display import DisplayMode, DisplayLookup
 from fastui.events import GoToEvent, BackEvent
@@ -47,6 +47,10 @@ app.include_router(rtsSerchAcounts.router)
 @app.get('/api/')
 async def gotomain():
     return [fastUIcomponents.FireEvent(event=GoToEvent(url='/main'))]
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return FileResponse("./src/logo1.ico")
 
 @app.get('/{path:path}')
 async def html_landing() -> HTMLResponse:

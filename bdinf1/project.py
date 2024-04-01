@@ -50,7 +50,7 @@ async def gotomain():
 
 @app.get('/favicon.ico', include_in_schema=False)
 async def favicon():
-    return FileResponse("./src/logo1.ico")
+    return FileResponse("./src/bank.ico")
 
 @app.get('/{path:path}')
 async def html_landing() -> HTMLResponse:

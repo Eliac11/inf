@@ -57,7 +57,7 @@ def create_reportAllAcc():
         table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                                   ('FONTNAME', (0, 0), (-1, 0), 'DudkaRegular'),
+                                   ('FONTNAME', (0, 0), (-1, -1), 'DudkaRegular'),
                                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
                                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                                    ('GRID', (0, 0), (-1, -1), 1, colors.black)]))

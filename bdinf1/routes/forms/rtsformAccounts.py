@@ -19,12 +19,29 @@ router = APIRouter()
 
 @router.get("/api/forms/Счета", response_model=FastUI, response_model_exclude_none=True)
 def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
-    accounts = parse_obj_as(List[pdtAccount], db.query(tblAccount).all())
+    qacc = db.query(tblAccount).all()
+    if len(qacc) > 0:
+        accounts = parse_obj_as(List[pdtAccount], qacc)
+    else:
+        accounts = []
 
     faccs = []
     for fac in accounts:
         faccs += [pdtFormAccounts(clientFullName=f"{fac.client.txtClientSurname} {fac.client.txtClientName} {fac.client.txtClientSecondName}",
                                   typeAccount=fac.account_type.txtAccountTypeName, datAccountBegin=fac.datAccountBegin, txtAccountNumber=fac.txtAccountNumber, intAccountId=fac.intAccountId)]
+
+    if len(faccs) > 0:
+        tablepos = fastUIcomponents.Table(
+                    data=faccs,
+                    columns=[
+                        DisplayLookup(field="clientFullName", title="ФИО владельца"),
+                        DisplayLookup(field="typeAccount", title="тип счета"),
+                        DisplayLookup(field="datAccountBegin", title="дата открытия"),
+                        DisplayLookup(field="txtAccountNumber", title="Номер счета" ,on_click=GoToEvent(url="/forms/formAccountInfo?account_id={intAccountId}")),
+                    ]
+                )
+    else:
+        tablepos = fastUIcomponents.Heading(text='Счетов нет', level=2)
 
     return [
         
@@ -36,15 +53,7 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
                 fastUIcomponents.Heading(text='Все счета', level=2),
                 fastUIcomponents.Link(
                     components=[fastUIcomponents.Text(text='Создать новый счет')], on_click=GoToEvent(url='/forms/formNewAccounts')),
-                fastUIcomponents.Table(
-                    data=faccs,
-                    columns=[
-                        DisplayLookup(field="clientFullName", title="ФИО владельца"),
-                        DisplayLookup(field="typeAccount", title="тип счета"),
-                        DisplayLookup(field="datAccountBegin", title="дата открытия"),
-                        DisplayLookup(field="txtAccountNumber", title="Номер счета" ,on_click=GoToEvent(url="/forms/formAccountInfo?account_id={intAccountId}")),
-                    ]
-                ),
+                tablepos,
             ]
         ),
     ]

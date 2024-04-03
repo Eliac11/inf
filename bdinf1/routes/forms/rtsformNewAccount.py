@@ -21,17 +21,17 @@ router = APIRouter()
 
 
 class SelectForm(BaseModel):
-    intAccountTypeId: str = Field(json_schema_extra={'search_url': '/service/searchAcountsType'}, title="Account Type")
-    intClientId: str = Field(json_schema_extra={'search_url': '/service/serchClients'}, title="Client name")
-    datAccountBegin: date = Field(title='Account Begin')
-    datAccountEnd: date = Field(title='Account End')
-    txtAccountNumber: str = Field(max_length=10, min_length=10, pattern=r"[0-9]", title='Account Number')
-    fltAccountSum: int = Field(title='Account Sum')
+    intAccountTypeId: str = Field(json_schema_extra={'search_url': '/service/searchAcountsType'}, title="Тип счета")
+    intClientId: str = Field(json_schema_extra={'search_url': '/service/serchClients'}, title="владелец счета")
+    datAccountBegin: date = Field(title='Дата открытия')
+    datAccountEnd: date = Field(title='Дата закрытия')
+    txtAccountNumber: str = Field(max_length=10, min_length=10, pattern=r"[0-9]", title='Номер аккаунта')
+    fltAccountSum: int = Field(title='Баланс')
 
     @validator('datAccountEnd')
     def validate_datAccountEnd(cls, value, values):
         if 'datAccountBegin' in values and value <= values['datAccountBegin']:
-            raise ValueError('Account End date must be greater than Account Begin date')
+            raise ValueError('Дата открытия не может быть больше даты закрытия')
         return value
 
     
@@ -42,10 +42,10 @@ def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
     return [
         fastUIcomponents.Page(  # Page provides a basic container for components
             components=[
-                fastUIcomponents.Heading(text='New Account', level= 1),
+                fastUIcomponents.Heading(text='Создание нового счета', level= 1),
                 fastUIcomponents.Link(
-                    components=[fastUIcomponents.Text(text='Back')], on_click=BackEvent()),
-                fastUIcomponents.Heading(text='Create new account', level = 2),
+                    components=[fastUIcomponents.Text(text='Назад')], on_click=BackEvent()),
+                # fastUIcomponents.Heading(text='Create new account', level = 2),
                 fastUIcomponents.ModelForm(model=SelectForm, display_mode='page', submit_url='/api/forms/formNewAccounts'),
             ])
         ]
@@ -65,4 +65,4 @@ async def big_form_post(form: Annotated[SelectForm, fastui_form(SelectForm)], db
     )
     db.add(account)
     db.commit()
-    return [fastUIcomponents.FireEvent(event=GoToEvent(url='/forms/formAccounts'))]
+    return [fastUIcomponents.FireEvent(event=GoToEvent(url='/forms/Счета'))]

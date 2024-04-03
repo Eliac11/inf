@@ -3,18 +3,18 @@ from sqlalchemy.orm import sessionmaker
 from faker import Faker
 from random import randint, choice
 from datetime import datetime, timedelta
-from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
+from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
 
 
 # engine = create_engine('sqlite:///Bank.db')
-connection_string = "mssql+pymssql://User411:User411p]+36@192.168.112.103/db22204"
+connection_string = "mssql+pymssql://User411:User411p]+36@192.168.112.103/db22204?charset=utf8"
 engine = create_engine(connection_string)
 
 
 Session = sessionmaker(bind=engine)
 session = Session()
 
-fake = Faker()
+fake = Faker(["ru_RU"])
 
 
 for _ in range(10):
@@ -34,9 +34,9 @@ for _ in range(10):
     )
     session.add(account_type)
 
-for _ in range(30):
+for nn in ['Списание', 'Пополнение', 'Зарплата', 'Кешбек']:
     operation_type = tblOperationType(
-        txtOperationTypeName=fake.word()
+        txtOperationTypeName=nn
     )
     session.add(operation_type)
 
@@ -51,8 +51,8 @@ for _ in range(30):
     account = tblAccount(
         intAccountTypeId=choice(account_type_ids),
         intClientId=choice(client_ids),
-        datAccountBegin=fake.date_between(start_date='-1y', end_date='today'),
-        datAccountEnd=fake.date_between(start_date='today', end_date='+1y'),
+        datAccountBegin=fake.date_between(start_date='-4y', end_date='-3y'),
+        datAccountEnd=fake.date_between(start_date='-2y', end_date='+6y'),
         txtAccountNumber=fake.random_int(min=1000000000, max=9999999999),
         fltAccountSum=randint(1000, 100000)
     )

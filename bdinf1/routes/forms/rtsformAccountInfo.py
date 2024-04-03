@@ -28,19 +28,19 @@ def users_table(account_id: int, db: Session = Depends(get_db)) -> list[AnyCompo
         operations = parse_obj_as(List[pdtOperation], db.query(tblOperation).filter(tblOperation.intAccountId == acc.intAccountId))
         tableview = fastUIcomponents.Div(class_name='border-top mt-3 pt-1', 
                                             components= [
-                                                fastUIcomponents.Heading(text="Operations", level=3),
+                                                fastUIcomponents.Heading(text="Операции", level=3),
                                                 fastUIcomponents.Table(
                                                         data=operations,
                                                         columns=[
-                                                            DisplayLookup(field='datOperation'),
-                                                            DisplayLookup(field='operation_type'),
-                                                            DisplayLookup(field='fltValue')
+                                                            DisplayLookup(field='datOperation', title="Дата орепации"),
+                                                            DisplayLookup(field='operation_type', title="Тип"),
+                                                            DisplayLookup(field='fltValue', title="Сумма")
                                                         ]
                                                     )
                                                 ]
                 )
     else:
-        tableview = fastUIcomponents.Heading(text = "Not Operations", level=3)
+        tableview = fastUIcomponents.Heading(text = "Нет операций", level=3)
 
     clientfullname = f"{acc.client.txtClientSurname} {acc.client.txtClientName} {acc.client.txtClientSecondName}"
     acctype = f"{acc.account_type.txtAccountTypeName}"
@@ -48,12 +48,12 @@ def users_table(account_id: int, db: Session = Depends(get_db)) -> list[AnyCompo
         class_name="border mt-3 pt-1",
         components=[
             fastUIcomponents.Heading(text=f"ID:              {acc.intAccountId}",level=4),
-            fastUIcomponents.Heading(text=f"Type:            {acctype}",level=4),
-            fastUIcomponents.Heading(text=f"Client Fullname: {clientfullname}",level=4),
-            fastUIcomponents.Heading(text=f"AccountBegin:    {acc.datAccountBegin}",level=4),
-            fastUIcomponents.Heading(text=f"AccountEnd:      {acc.datAccountEnd}",level=4),
-            fastUIcomponents.Heading(text=f"AccountNumber:   {acc.txtAccountNumber}",level=4),
-            fastUIcomponents.Heading(text=f"AccountSum:      {acc.fltAccountSum}",level=4),
+            fastUIcomponents.Heading(text=f"Тип:            {acctype}",level=4),
+            fastUIcomponents.Heading(text=f"ФИО: {clientfullname}",level=4),
+            fastUIcomponents.Heading(text=f"Дата открытия:    {acc.datAccountBegin}",level=4),
+            fastUIcomponents.Heading(text=f"Дата закрытия:      {acc.datAccountEnd}",level=4),
+            fastUIcomponents.Heading(text=f"Номер счета:   {acc.txtAccountNumber}",level=4),
+            fastUIcomponents.Heading(text=f"Баланс:      {acc.fltAccountSum}",level=4),
         ]
         )
 
@@ -61,14 +61,14 @@ def users_table(account_id: int, db: Session = Depends(get_db)) -> list[AnyCompo
     return [
         fastUIcomponents.Page(  # Page provides a basic container for components
             components=[
-                fastUIcomponents.Heading(text="Account Info", level= 1),
+                fastUIcomponents.Heading(text="Информация счета", level= 1),
                 fastUIcomponents.Link(
-                    components=[fastUIcomponents.Text(text='Back')], on_click=BackEvent()),
+                    components=[fastUIcomponents.Text(text='Назад')], on_click=BackEvent()),
                 cardInfo,
                 tableview,
-                fastUIcomponents.Button(text='Add New Operations', on_click=PageEvent(name='open-form')),
+                fastUIcomponents.Button(text='Добавиить новую операцию', on_click=PageEvent(name='open-form')),
                 fastUIcomponents.Modal(
-                    title='Add Operations',
+                    title='Добавить новую операцию',
                     body=[
                         fastUIcomponents.Paragraph(text=clientfullname),
                         fastUIcomponents.Paragraph(text=acctype),

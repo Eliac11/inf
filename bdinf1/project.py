@@ -54,4 +54,4 @@ async def favicon():
 
 @app.get('/{path:path}')
 async def html_landing() -> HTMLResponse:
-    return HTMLResponse(prebuilt_html(title='Bank Service'))
+    return HTMLResponse(prebuilt_html(title='Банк'))

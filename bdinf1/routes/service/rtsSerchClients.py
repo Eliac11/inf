@@ -41,6 +41,6 @@ async def search_view(request: Request, q: str, db: Session = Depends(get_db)) -
         sercheddata = data
 
     blocks = {}
-    blocks["Clients"] = sercheddata
+    blocks["Клиенты"] = sercheddata
     options = [{'label': k, 'options': v} for k, v in blocks.items()]
     return SelectSearchResponse(options=options)

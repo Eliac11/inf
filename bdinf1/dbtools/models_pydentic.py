@@ -3,7 +3,7 @@ from typing import Optional, List
 from datetime import date
 
 
-FORMS = ["formAccounts"]
+FORMS = ["Счета"]
 
 class pdtClient(BaseModel):
     intClientId: Optional[int]
@@ -43,7 +43,7 @@ class pdtAccount(BaseModel):
 
 class pdtOperationType(BaseModel):
     intOperationTypeId: Optional[int]
-    txtOperationTypeName: str
+    txtOperationTypeName: str = Field(title="Тип операции")
 
     class Config:
         from_attributes = True
@@ -79,7 +79,7 @@ class NamesTables(BaseModel):
 
 
 class NamesForms(BaseModel):
-    name: str
+    name: str = Field(title="Формы")
 
 class FormDownloadAccountInfo(BaseModel):
-    account_number: str = Field(json_schema_extra={'search_url': '/service/searchAcounts', 'placeholder': 'Report Account Info'})
+    account_number: str = Field(json_schema_extra={'search_url': '/service/searchAcounts', 'placeholder': 'Информация по счету'})

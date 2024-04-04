@@ -63,7 +63,7 @@ def create_reportinfoAcc(account_number):
     ]
     account_table = Table(account_data)
     account_table.setStyle(TableStyle([
-                                       ('FONTNAME', (0, 0), (-1, 0), 'DudkaRegular')]))
+                                       ('FONTNAME', (0, 0), (-1, -1), 'DudkaRegular')]))
     elements.append(account_table)
     elements.append(Paragraph("-"*100 + "\n\n", body_style))
 

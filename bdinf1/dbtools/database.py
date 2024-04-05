@@ -2,9 +2,12 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from toolenv import get_dbconf
 
 
-SQLALCHEMY_DATABASE_URL = "mssql+pymssql://User411:User411p]+36@192.168.112.103/db22204?charset=cp1251"
+
+
+SQLALCHEMY_DATABASE_URL = f"mssql+pymssql://{get_dbconf()}?charset=cp1251"
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 metadata = MetaData()

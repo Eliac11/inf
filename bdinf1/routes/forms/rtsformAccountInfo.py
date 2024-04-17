@@ -34,7 +34,7 @@ def users_table(account_id: int, db: Session = Depends(get_db)) -> list[AnyCompo
                                                         columns=[
                                                             DisplayLookup(field='datOperation', title="Дата орепации"),
                                                             DisplayLookup(field='operation_type', title="Тип"),
-                                                            DisplayLookup(field='fltValue', title="Сумма")
+                                                            DisplayLookup(field='fltValue', title="Сумма", on_click=GoToEvent(url="/forms/delOperation?intOperationId={intOperationId}"))
                                                         ]
                                                     )
                                                 ]
@@ -94,4 +94,14 @@ async def big_form_post(account_id: int, form: Annotated[formNewOperation.Select
     db.commit()
     return [fastUIcomponents.FireEvent(event=PageEvent(name='open-form', clear=True)),
             fastUIcomponents.FireEvent(event=GoToEvent(url=f"/forms/formAccountInfo?account_id={account_id}"))]
+
+@router.get('/api/forms/delOperation', response_model=FastUI, response_model_exclude_none=True)
+async def big_form_post(intOperationId: int, db: Session = Depends(get_db)):
+
+    operation = db.query(tblOperation).filter(tblOperation.intOperationId == intOperationId).first()
+    accid = int(operation.intAccountId)
+
+    db.delete(operation)
+    db.commit()
+    return [fastUIcomponents.FireEvent(event=GoToEvent(url=f"/forms/formAccountInfo?account_id={accid}"))]
 

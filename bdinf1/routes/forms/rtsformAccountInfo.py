@@ -10,6 +10,7 @@ from fastui.forms import fastui_form
 from pydantic import parse_obj_as
 
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 
 from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
 from dbtools.models_pydentic import pdtAccount, pdtClient, pdtAccountType, pdtOperation, pdtOperationType, pdtFormAccounts, NamesForms, NamesTables, FORMS
@@ -84,13 +85,17 @@ def users_table(account_id: int, db: Session = Depends(get_db)) -> list[AnyCompo
 @router.post('/api/forms/formNewOperation', response_model=FastUI, response_model_exclude_none=True)
 async def big_form_post(account_id: int, form: Annotated[formNewOperation.SelectForm, fastui_form(formNewOperation.SelectForm)], db: Session = Depends(get_db)):
 
-    operation = tblOperation(
-        intOperationTypeId = form.intOperationTypeId,
-        intAccountId = account_id,
-        fltValue = form.fltValue,
-        datOperation = form.datOperation,
-    )
-    db.add(operation)
+    sql_query = text("INSERT INTO tblOperation (intOperationTypeId, intAccountId, fltValue, datOperation) VALUES (:type_id, :account_id, :value, :operation_date)")
+
+    # Выполнение SQL запроса с передачей параметров
+    db.execute(sql_query, {
+        'type_id': int(form.intOperationTypeId),
+        'account_id': account_id,
+        'value': form.fltValue,
+        'operation_date': form.datOperation
+    })
+
+    # Фиксация изменений
     db.commit()
     return [fastUIcomponents.FireEvent(event=PageEvent(name='open-form', clear=True)),
             fastUIcomponents.FireEvent(event=GoToEvent(url=f"/forms/formAccountInfo?account_id={account_id}"))]

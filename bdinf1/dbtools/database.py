@@ -10,7 +10,7 @@ from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationTy
 
 
 SQLALCHEMY_DATABASE_URL = f"mssql+pymssql://{get_dbconf()}?charset=cp1251"
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, implicit_returning=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 metadata = MetaData()
 metadata.reflect(bind=engine)
@@ -25,46 +25,46 @@ def get_db():
 
 
 #EVANTS 
-
-def on_operation_insert(mapper, connection, operation):
-    session = sessionmaker(bind=connection)()
-    account_id = operation.intAccountId
-    account = session.query(tblAccount).filter_by(intAccountId=account_id).first()
-    if account:
-        account.fltAccountSum += operation.fltValue
-        session.commit()
-    session.close()
-
-
-event.listen(tblOperation, 'after_insert', on_operation_insert)
+# TODO in DB like triggers 
+# def on_operation_insert(mapper, connection, operation):
+#     session = sessionmaker(bind=connection)()
+#     account_id = operation.intAccountId
+#     account = session.query(tblAccount).filter_by(intAccountId=account_id).first()
+#     if account:
+#         account.fltAccountSum += operation.fltValue
+#         session.commit()
+#     session.close()
 
 
-def on_operation_delete(mapper, connection, operation):
-    session = sessionmaker(bind=connection)()
-    account_id = operation.intAccountId
-    account = session.query(tblAccount).filter_by(intAccountId=account_id).first()
-    if account:
-        account.fltAccountSum -= operation.fltValue
-        session.commit()
-    session.close()
-
-event.listen(tblOperation, 'after_delete', on_operation_delete)
+# event.listen(tblOperation, 'after_insert', on_operation_insert)
 
 
+# def on_operation_delete(mapper, connection, operation):
+#     session = sessionmaker(bind=connection)()
+#     account_id = operation.intAccountId
+#     account = session.query(tblAccount).filter_by(intAccountId=account_id).first()
+#     if account:
+#         account.fltAccountSum -= operation.fltValue
+#         session.commit()
+#     session.close()
 
-def check_duplicate_operations(mapper, connection, operation):
-    session = sessionmaker(bind=connection)()
-    account_id = operation.intAccountId
-    operation_date = operation.datOperation
+# event.listen(tblOperation, 'after_delete', on_operation_delete)
+
+
+
+# def check_duplicate_operations(mapper, connection, operation):
+#     session = sessionmaker(bind=connection)()
+#     account_id = operation.intAccountId
+#     operation_date = operation.datOperation
     
-    existing_operation = session.query(tblOperation).filter(
-        tblOperation.intAccountId == account_id,
-        tblOperation.datOperation == operation_date
-    ).first()
+#     existing_operation = session.query(tblOperation).filter(
+#         tblOperation.intAccountId == account_id,
+#         tblOperation.datOperation == operation_date
+#     ).first()
     
-    if existing_operation:
-        raise ValueError("Duplicate operation for the same account on the same day")
+#     if existing_operation:
+#         raise ValueError("Duplicate operation for the same account on the same day")
 
-    session.close()
+#     session.close()
 
-event.listen(tblOperation, 'before_insert', check_duplicate_operations)
+# event.listen(tblOperation, 'before_insert', check_duplicate_operations) 

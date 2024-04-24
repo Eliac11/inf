@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from typing import List, Annotated
 
-from fastapi import Depends, APIRouter
+from fastapi import Depends, APIRouter, HTTPException
 from fastui import FastUI, AnyComponent, components as fastUIcomponents
 from fastui.events import BackEvent
 from fastui.components.display import DisplayMode, DisplayLookup
@@ -73,7 +73,7 @@ def users_table(account_id: int, db: Session = Depends(get_db)) -> list[AnyCompo
                     body=[
                         fastUIcomponents.Paragraph(text=clientfullname),
                         fastUIcomponents.Paragraph(text=acctype),
-                        fastUIcomponents.ModelForm(model=formNewOperation.SelectForm, display_mode='default', submit_url=f"/api/forms/formNewOperation?account_id={account_id}", submit_trigger=PageEvent(name='submit-form'), submit_on_change=True),
+                        fastUIcomponents.ModelForm(model=formNewOperation.SelectForm, display_mode='default', submit_url=f"/api/forms/formNewOperation?account_id={account_id}", submit_trigger=PageEvent(name='submit-form')),
                     ],
                     open_trigger=PageEvent(name='open-form')
                 )
@@ -87,18 +87,33 @@ async def big_form_post(account_id: int, form: Annotated[formNewOperation.Select
 
     sql_query = text("INSERT INTO tblOperation (intOperationTypeId, intAccountId, fltValue, datOperation) VALUES (:type_id, :account_id, :value, :operation_date)")
 
-    # Выполнение SQL запроса с передачей параметров
-    db.execute(sql_query, {
+    
+    
+
+    try:
+        db.execute(sql_query, {
         'type_id': int(form.intOperationTypeId),
         'account_id': account_id,
         'value': form.fltValue,
         'operation_date': form.datOperation
     })
-
-    # Фиксация изменений
-    db.commit()
-    return [fastUIcomponents.FireEvent(event=PageEvent(name='open-form', clear=True)),
-            fastUIcomponents.FireEvent(event=GoToEvent(url=f"/forms/formAccountInfo?account_id={account_id}"))]
+        db.commit()
+        return [fastUIcomponents.FireEvent(event=PageEvent(name='open-form', clear=True)),
+                fastUIcomponents.FireEvent(event=GoToEvent(url=f"/forms/formAccountInfo?account_id={account_id}"))]
+    except:
+        raise HTTPException(status_code=422, detail={
+                                    "form": [
+                                        {
+                                            "type": "value_error",
+                                            "loc": [
+                                                "datOperation"
+                                            ],
+                                            "msg": "В этот день уже была проведена орепация"
+                                        }
+                                    ]
+                                }
+                            
+                        )
 
 @router.get('/api/forms/delOperation', response_model=FastUI, response_model_exclude_none=True)
 async def big_form_post(intOperationId: int, db: Session = Depends(get_db)):

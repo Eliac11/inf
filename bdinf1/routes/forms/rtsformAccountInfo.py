@@ -8,6 +8,7 @@ from fastui.components.display import DisplayMode, DisplayLookup
 from fastui.events import GoToEvent, BackEvent, PageEvent
 from fastui.forms import fastui_form
 from pydantic import parse_obj_as
+from sqlalchemy.exc import OperationalError
 
 from sqlalchemy.orm import Session
 from sqlalchemy import text
@@ -100,7 +101,7 @@ async def big_form_post(account_id: int, form: Annotated[formNewOperation.Select
         db.commit()
         return [fastUIcomponents.FireEvent(event=PageEvent(name='open-form', clear=True)),
                 fastUIcomponents.FireEvent(event=GoToEvent(url=f"/forms/formAccountInfo?account_id={account_id}"))]
-    except:
+    except OperationalError:
         raise HTTPException(status_code=422, detail={
                                     "form": [
                                         {
@@ -108,7 +109,7 @@ async def big_form_post(account_id: int, form: Annotated[formNewOperation.Select
                                             "loc": [
                                                 "datOperation"
                                             ],
-                                            "msg": "В этот день уже была проведена орепация"
+                                            "msg": "В этот день уже была проведена операция"
                                         }
                                     ]
                                 }

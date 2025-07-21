@@ -71,8 +71,8 @@ def generate_obsidian_project(graph, output_directory):
                     file.write(f"- [[{dependency}.py]]\n")
 
 if __name__ == "__main__":
-    project_directory = "C:\work\interaction_editor_api_vdnh"
-    obsidian_output_directory = "./data/api_vdnh_creatorClasses"
+    project_directory = "C:\work\smusic\smusic_backend"
+    obsidian_output_directory = "./data/smusic_backend_creatorClasses"
 
     dependency_graph = generate_dependency_graph(project_directory)
     generate_obsidian_project(dependency_graph, obsidian_output_directory)

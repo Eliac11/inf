@@ -16,9 +16,6 @@ from dbtools.database import get_db
 router = APIRouter()
 
 
-
-
-
 @router.get("/api/tables/tblAccount", response_model=FastUI, response_model_exclude_none=True)
 def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
     bankusers = parse_obj_as(List[pdtAccount], db.query(tblAccount).all())

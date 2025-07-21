@@ -20,7 +20,7 @@ router = APIRouter()
 def users_table(db: Session = Depends(get_db)) -> list[AnyComponent]:
     bankusers = parse_obj_as(List[pdtOperation], db.query(tblOperation).all())
     return [
-        fastUIcomponents.Page(  # Page provides a basic container for components
+        fastUIcomponents.Page(
             components=[
                 fastUIcomponents.Link(
                     components=[fastUIcomponents.Text(text='Back')], on_click=BackEvent()),

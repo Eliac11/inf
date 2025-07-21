@@ -9,7 +9,7 @@ from dbtools.models import tblClient, tblAccountType, tblAccount, tblOperationTy
 
 
 
-SQLALCHEMY_DATABASE_URL = f"mssql+pymssql://{get_dbconf()}?charset=cp1251"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///./test.db"
 engine = create_engine(SQLALCHEMY_DATABASE_URL, implicit_returning=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 metadata = MetaData()

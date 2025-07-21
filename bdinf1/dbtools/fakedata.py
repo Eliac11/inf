@@ -4,11 +4,11 @@ from faker import Faker
 from random import randint, choice
 from datetime import datetime, timedelta
 from models import tblClient, tblAccountType, tblAccount, tblOperationType, tblOperation
-from toolenv import get_dbconf
+# from toolenv import get_dbconf
 
 
-# engine = create_engine('sqlite:///Bank.db')
-connection_string = f"mssql+pymssql://{get_dbconf()}?charset=utf8"
+connection_string = 'sqlite:///./test.db'
+# connection_string = f"mssql+pymssql://{get_dbconf()}?charset=utf8"
 engine = create_engine(connection_string)
 
 
